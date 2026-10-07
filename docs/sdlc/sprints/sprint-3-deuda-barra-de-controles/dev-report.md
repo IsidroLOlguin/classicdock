@@ -27,6 +27,16 @@ Recents en esta tablet es la tarea `type=recents` (activityType 3, id 17) con ac
 ## Tests
 `./gradlew assembleDebug testDebugUnitTest` exit 0, 19 pruebas, 0 fallos. Mutación: sin el filtro de display fallan 4; quitando además Recents, 5.
 
+## Ajuste post-QA (ciclo 2)
+Decisión de Isidro: con Shizuku caído la barra sigue visible si hay tarea objetivo; Minimizar funciona y Cerrar avisa.
+- `getRunningTasks` sin Shizuku solo devuelve las tareas propias (Android 5+), así que no resuelve la tarea ajena. Comportamiento mínimo: `WindowControlsBar` recibe `foregroundPackage: (displayId) -> String?`; `DockService` lo implementa con `windowsOnAllDisplays[display]` (el servicio ya tiene `flagRetrieveInteractiveWindows`): ventana `TYPE_APPLICATION` activa de ese display y su `root.packageName`. `WindowControlsPolicy.fallbackTask` lo vuelve un `ForegroundTask` (id -1, modo pantalla completa asumido) y pasa por los mismos filtros (launcher, ClassicDock, systemui). Con Shizuku vivo nada cambia.
+- Límites sin Shizuku: no se conoce el modo de ventana (una ventana freeform muestra la barra) ni la actividad (Recents con un launcher distinto al de Samsung no se excluye). Cerrar siempre cae en `UNAVAILABLE` (id -1): aviso en la barra + Toast.
+- `update()` ya no oculta la barra cuando `activityManager()` es nulo.
+- QA 2: `warning` y `destroyed` ahora `@Volatile`. QA 3: `executor.execute` va envuelto (`runInBackground`) y captura `RejectedExecutionException` tras `shutdownNow`.
+- Tests: 22 (3 nuevos: fallback con app, fallback con launcher/systemui/propia/nulo, id -1 no cierra y avisa). `./gradlew assembleDebug testDebugUnitTest --offline` exit 0.
+- Tablet SM-X910 (R52X603XGQT), build nuevo, `kill` de `shizuku_server` (pid 30809): Brave a pantalla completa -> ventana de la barra `mViewVisibility=0x0`; Home -> `0x8`; Minimizar (tap) -> launcher al frente; Cerrar (tap) -> aviso «Sin Shizuku no se puede cerrar la app» en la barra y Brave sigue como tarea resumida; `Suppressing toast` confirma que el Toast sigue suprimido. Captura: `docs/progress/s-3.1-sin-shizuku-aviso.crop.png`. Shizuku se volvió a arrancar (pid 5828) y Brave se cerró con `force-stop`.
+- Sin verificar: segundo display real, ni el caso de que la ventana activa de otro display sea la que cuenta.
+
 ## Decidí NO hacer
 - No tocar `DockService.kt`: la API pública de la barra (`update`/`destroy`, constructor) no cambió.
 - No reutilizar `AppUtils.getRunningTasks`: carga íconos/labels y no expone display (decisión de S-2.1 vigente).
