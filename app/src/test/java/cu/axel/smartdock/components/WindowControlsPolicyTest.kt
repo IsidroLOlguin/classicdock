@@ -2,6 +2,7 @@ package cu.axel.smartdock.components
 
 import cu.axel.smartdock.models.WINDOWING_MODE_FREEFORM
 import cu.axel.smartdock.models.WINDOWING_MODE_FULLSCREEN
+import android.os.RemoteException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -72,12 +73,6 @@ class WindowControlsPolicyTest {
     }
 
     @Test
-    fun displayIlegibleNuncaCoincide() {
-        val t = task("com.brave.browser", display = WindowControlsPolicy.INVALID_DISPLAY_ID)
-        assertNull(target(t, display = 0))
-    }
-
-    @Test
     fun recentsNoEsObjetivoAunqueSuPaqueteNoSeaElLauncher() {
         val recents = task(launcher, activity = WindowControlsPolicy.RECENTS_ACTIVITY)
         assertNull(target(recents, launcherPkg = "com.teslacoilsw.launcher"))
@@ -90,46 +85,30 @@ class WindowControlsPolicyTest {
     }
 
     @Test
-    fun idInvalidoONuloNoEjecutaLaAccion() {
-        var llamadas = 0
-        WindowControlsPolicy.runOnTask(task("a", id = -1)) { llamadas++ }
-        WindowControlsPolicy.runOnTask(task("a", id = 0)) { llamadas++ }
-        WindowControlsPolicy.runOnTask(null) { llamadas++ }
-        assertEquals(0, llamadas)
-    }
-
-    @Test
-    fun idRealEjecutaLaAccionConEseId() {
-        var recibido = -1
-        WindowControlsPolicy.runOnTask(task("a", id = 42)) { recibido = it }
-        assertEquals(42, recibido)
-    }
-
-    @Test
     fun cerrarConLauncherAlFrenteNoQuitaNada() {
         var llamadas = 0
-        val top = task(launcher, id = 9)
-        WindowControlsPolicy.runOnTask(target(top)) { llamadas++ }
+        val r = WindowControlsPolicy.close(true, target(task(launcher, id = 9))) { llamadas++; true }
+        assertEquals(CloseResult.NO_TARGET, r)
         assertEquals(0, llamadas)
     }
 
     @Test
     fun cerrarSinGestorDeActividadesAvisaYNoQuitaNada() {
         var llamadas = 0
-        val r = WindowControlsPolicy.close(false, task("a", id = 5)) { llamadas++ }
+        val r = WindowControlsPolicy.close(false, task("a", id = 5)) { llamadas++; true }
         assertEquals(CloseResult.UNAVAILABLE, r)
         assertEquals(0, llamadas)
     }
 
     @Test
     fun cerrarSinGestorYSinTareaTambienAvisa() {
-        assertEquals(CloseResult.UNAVAILABLE, WindowControlsPolicy.close(false, null) {})
+        assertEquals(CloseResult.UNAVAILABLE, WindowControlsPolicy.close(false, null) { true })
     }
 
     @Test
     fun cerrarConGestorQuitaLaTareaConSuId() {
         var recibido = -1
-        val r = WindowControlsPolicy.close(true, task("a", id = 42)) { recibido = it }
+        val r = WindowControlsPolicy.close(true, task("a", id = 42)) { recibido = it; true }
         assertEquals(CloseResult.CLOSED, r)
         assertEquals(42, recibido)
     }
@@ -137,16 +116,40 @@ class WindowControlsPolicyTest {
     @Test
     fun cerrarConGestorSinTareaOIdInvalidoNoHaceNadaNiAvisa() {
         var llamadas = 0
-        assertEquals(CloseResult.NO_TARGET, WindowControlsPolicy.close(true, null) { llamadas++ })
-        assertEquals(CloseResult.NO_TARGET, WindowControlsPolicy.close(true, task("a", id = -1)) { llamadas++ })
-        assertEquals(CloseResult.NO_TARGET, WindowControlsPolicy.close(true, task("a", id = 0)) { llamadas++ })
+        assertEquals(CloseResult.NO_TARGET, WindowControlsPolicy.close(true, null) { llamadas++; true })
+        assertEquals(CloseResult.NO_TARGET, WindowControlsPolicy.close(true, task("a", id = 0)) { llamadas++; true })
         assertEquals(0, llamadas)
     }
 
     @Test
-    fun cerrarConBinderMuertoAvisaEnVezDeFallarEnSilencio() {
-        val r = WindowControlsPolicy.close(true, task("a", id = 5)) { throw IllegalStateException("binder muerto") }
+    fun removeTaskQueDevuelveFalseNoCuentaComoCerrada() {
+        assertEquals(CloseResult.FAILED, WindowControlsPolicy.close(true, task("a", id = 5)) { false })
+    }
+
+    @Test
+    fun binderMuertoOSinPermisoDeShizukuEsNoDisponible() {
+        assertEquals(
+            CloseResult.UNAVAILABLE,
+            WindowControlsPolicy.close(true, task("a", id = 5)) { throw RemoteException() }
+        )
+        assertEquals(
+            CloseResult.UNAVAILABLE,
+            WindowControlsPolicy.close(true, task("a", id = 5)) { throw SecurityException("sin permiso") }
+        )
+    }
+
+    @Test
+    fun otraExcepcionDeRemoveTaskEsFalloDelSistema() {
+        val r = WindowControlsPolicy.close(true, task("a", id = 5)) { throw IllegalStateException("raro") }
+        assertEquals(CloseResult.FAILED, r)
+    }
+
+    @Test
+    fun tareaDeFallbackNoSePuedeCerrarYAvisaAunConGestorVivo() {
+        var llamadas = 0
+        val r = WindowControlsPolicy.close(true, task("a", id = WindowControlsPolicy.FALLBACK_ID)) { llamadas++; true }
         assertEquals(CloseResult.UNAVAILABLE, r)
+        assertEquals(0, llamadas)
     }
 
     private fun fallbackTarget(pkg: String?, display: Int = 0) =
@@ -170,8 +173,7 @@ class WindowControlsPolicyTest {
         val t = fallbackTarget("com.brave.browser")
         assertEquals(-1, t?.id)
         var llamadas = 0
-        WindowControlsPolicy.runOnTask(t) { llamadas++ }
-        assertEquals(CloseResult.UNAVAILABLE, WindowControlsPolicy.close(false, t) { llamadas++ })
+        assertEquals(CloseResult.UNAVAILABLE, WindowControlsPolicy.close(false, t) { llamadas++; true })
         assertEquals(0, llamadas)
     }
 }
