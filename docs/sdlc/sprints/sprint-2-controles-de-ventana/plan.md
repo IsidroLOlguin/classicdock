@@ -1,8 +1,9 @@
 # Plan — sprint-2 (E-2 Controles de ventana)
 
 ## Decisiones de Isidro (2026-10-07)
-- Barra propia de ClassicDock con minimizar, maximizar y cerrar (DeX descartado: no se activa por adb).
-- Se instala Shizuku en la tablet: cerrar = `removeTask`, maximizar = cambio de modo de ventana con el id de tarea real.
+- Barra propia de ClassicDock con minimizar y cerrar (DeX descartado: no se activa por adb).
+- Se instala Shizuku en la tablet: cerrar = `removeTask` con el id de tarea real.
+- Maximizar descartado (2026-10-07): Android 16 no permite cambiar el modo de ventana (medido); la barra queda con minimizar y cerrar.
 - En ventanas flotantes la barra se oculta (Samsung ya trae sus botones).
 
 ## Stories

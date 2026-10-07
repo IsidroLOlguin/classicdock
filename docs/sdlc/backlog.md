@@ -5,7 +5,7 @@
 |---|---|---|---|---|
 | E-0 | Identidad del fork | Instalable junto al original, con créditos y despliegue de un comando | FR-01, FR-08 | 1 |
 | E-1 | Dock y barra de apps | Aspecto DeX clásico | FR-02..FR-07 | 2 |
-| E-2 | Controles de ventana | Minimizar, maximizar y cerrar siempre visibles | FR-09 | 3 |
+| E-2 | Controles de ventana | Minimizar y cerrar siempre visibles | FR-09 | 3 |
 
 ## Stories
 ### S-0.1 — Rebrand (rama `feature/rebrand`)
@@ -80,7 +80,7 @@
   - Given el dock oculto When lo activo Then aparece con fade y escala desde 0.90 en 180 ms, y al ocultarse hace lo inverso
 
 ### S-2.0 — Shizuku operativo (rama `feature/shizuku-setup`)
-- Como Isidro quiero ids de tarea reales para que la barra pueda cerrar y maximizar
+- Como Isidro quiero ids de tarea reales para que la barra pueda cerrar
 - Cubre: FR-09
 - Complejidad: S
 - Depende de: S-1.2
@@ -89,14 +89,14 @@
   - Given el procedimiento When se documenta Then `docs/maintenance.md` explica cómo reiniciar Shizuku
 
 ### S-2.1 — Barra de controles de ventana (rama `feature/window-controls`)
-- Como Isidro quiero minimizar, maximizar y cerrar visibles en cualquier ventana, también a pantalla completa
+- Como Isidro quiero minimizar y cerrar visibles en cualquier ventana, también a pantalla completa
 - Cubre: FR-09
 - Complejidad: M
 - Depende de: S-2.0
 - Criterios de aceptación:
-  - Given una app a pantalla completa When miro la parte superior Then veo una barra fina de ClassicDock con minimizar, maximizar y cerrar
+  - Given una app a pantalla completa When miro la parte superior Then veo una barra fina de ClassicDock con minimizar y cerrar
   - Given una ventana flotante When la miro Then no hay botones duplicados con los de Samsung
-  - Given los tres botones When los toco Then minimizan, maximizan o cierran la tarea en primer plano
+  - Given los dos botones When los toco Then minimizan o cierran la tarea en primer plano
 - Preguntas abiertas: cómo cerrar la tarea sin Shizuku; qué hacer en flotantes (ocultar la barra o integrarse); ver `DockService.kt` ~638 (acciones de tarea) y `AppUtils.makeLaunchBounds`.
 
 ## Historial de cambios

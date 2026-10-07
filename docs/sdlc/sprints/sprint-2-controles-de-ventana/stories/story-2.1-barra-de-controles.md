@@ -4,14 +4,14 @@
 - Dev: sdlc-dev · QA: sdlc-qa (captura en la tablet SM-X910, adb `R52X603XGQT`)
 
 ## Historia
-Como Isidro quiero minimizar, maximizar y cerrar visibles sobre la app en primer plano, también a pantalla completa.
+Como Isidro quiero minimizar y cerrar visibles sobre la app en primer plano, también a pantalla completa.
 
 ## Criterios de aceptación
-1. Given una app a pantalla completa When miro la parte superior Then veo una barra fina de ClassicDock con minimizar, maximizar y cerrar.
+1. Given una app a pantalla completa When miro la parte superior Then veo una barra fina de ClassicDock con minimizar y cerrar.
 2. Given una ventana flotante (`windowingMode == FREEFORM`) When la miro Then la barra no se muestra.
-3. Given los tres botones When los toco Then minimizan (Home), maximizan (la tarea pasa a fullscreen con su id real) o cierran (`removeTask`) la tarea en primer plano.
+3. Given los dos botones When los toco Then minimizan (Home) o cierran (`removeTask`) la tarea en primer plano.
 4. Given que la tarea en primer plano es launcher, systemui o ClassicDock Then la barra no se muestra y no actúa sobre ellos.
-5. Given Shizuku sin correr (id = -1 o wrapper nulo) Then cerrar y maximizar no hacen nada y no hay crash; minimizar (Home) sigue funcionando.
+5. Given Shizuku sin correr (id = -1 o wrapper nulo) Then cerrar no hace nada y no hay crash; minimizar (Home) sigue funcionando.
 6. La barra no tapa contenido relevante de la app: superposición fina, altura medida en captura.
 
 ## Diseño (restricciones)
@@ -43,6 +43,7 @@ Medido en la tablet (SM-X910, Android 16, Shizuku corriendo; sin capturas, eso e
 - AC5 con Shizuku caído no se probó en tablet (no se detuvo Shizuku); cubierto por unit (`runOnTask` con id -1/0/nulo) y `activityManager()?` nulo.
 
 ### Desviaciones
+0. **Decisión de Isidro (2026-10-07): se quita el botón maximizar.** Android 16 no permite cambiar el modo de ventana de una tarea por esta vía (medido, ver punto 1), así que el botón era un no-op. Se eliminaron del repo el botón del layout, su listener, `ActivityManagerWrapper.setTaskFullscreen` y las strings `maximize` (values y values-es). La barra queda con minimizar y cerrar (92x28dp en lugar de 132x28dp; las medidas de arriba son de la versión con tres botones). AC1 y AC3 pasan a "minimizar y cerrar". Los puntos 1 y 3 siguientes se conservan como motivo histórico.
 1. **Maximizar no cambia el modo de ventana (AC3 parcial).** `setTaskWindowingMode` no existe en `IActivityManager` ni `IActivityTaskManager` de AOSP android16-release (grep del AIDL descargado; el stub del repo solo declara getTasks/resizeTask/removeTask, y en runtime se usa la clase real del framework). `resizeTask` solo actúa sobre tareas freeform/multiventana (`am help`) y no cambia su modo: medido, calculadora freeform + `am task resize 48 0 0 2960 1848` queda `mode=freeform`; sobre una tarea fullscreen el sistema responde "resizeTask not allowed". Además AC2 oculta la barra en freeform, así que el botón solo se ve sobre tareas que ya son fullscreen: su efecto real es nulo. Opciones para Isidro: quitar el botón, o historia aparte con `WindowContainerTransaction.setWindowingMode` (API de organizer por reflexión, riesgo medio). Se dejó el botón con `setTaskFullscreen` (resizeTask con `Rect()` vacío, como la acción "fullscreen" del menú contextual).
 2. Sin Shizuku la barra no aparece (el plan hablaba de degradar a solo minimizar): sin él no se conoce la tarea en primer plano ni su modo.
 3. `getCurrentLauncher` se hizo público en vez de duplicar la resolución del launcher.

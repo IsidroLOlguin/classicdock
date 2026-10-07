@@ -43,9 +43,6 @@ class WindowControlsBar(
 
     init {
         view.findViewById<View>(R.id.window_minimize_btn).setOnClickListener { goHome() }
-        view.findViewById<View>(R.id.window_maximize_btn).setOnClickListener {
-            WindowControlsPolicy.runOnTask(target) { activityManager()?.setTaskFullscreen(it) }
-        }
         view.findViewById<View>(R.id.window_close_btn).setOnClickListener {
             WindowControlsPolicy.runOnTask(target) { activityManager()?.removeTask(it) }
         }
