@@ -23,7 +23,7 @@ Ejecuta en un shell de adb o root:
 pm grant dev.isidro.classicdock android.permission.WRITE_SECURE_SETTINGS
 ```
 
-Con `scripts/deploy.sh` (cuando exista) se compila, instala y otorga el permiso en un solo comando.
+Con `scripts/deploy.sh` se compila, instala y otorga el permiso en un solo comando.
 
 ### Ocultar la barra de navegación
 [Ver cómo ocultar la barra de navegación](HideNav.md)
