@@ -10,8 +10,8 @@
 
 ## Etapa actual
 - Loop: interno
-- Artefacto/Sprint en curso: sprint-4 (E-4) redefinido: retirar barra propia
-- Story en curso y fase: S-4.1 (retiro) por despachar; después spike resizeTask/teclas y E-5/E-6
+- Artefacto/Sprint en curso: sprint-4 (E-4) retirar barra propia
+- Story en curso y fase: S-4.1 implementada y con QA ok en rama feature/remove-controls-bar; falta verificar en tablet y gate de merge
 
 ## Gates cruzados
 | Fecha | Artefacto/Story | Notas |
