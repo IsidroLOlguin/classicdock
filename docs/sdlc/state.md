@@ -10,8 +10,8 @@
 
 ## Etapa actual
 - Loop: interno
-- Artefacto/Sprint en curso: sprint-2 (E-2), S-2.1 DONE en dev
-- Story en curso y fase: S-2.1 DONE; falta retro del sprint-2
+- Artefacto/Sprint en curso: sprint-2 (E-2) cerrado
+- Story en curso y fase: ninguna; E-2 DONE, sin push a origin/dev
 
 ## Gates cruzados
 | Fecha | Artefacto/Story | Notas |
@@ -30,7 +30,7 @@
 |---|---|---|
 | E-0 Identidad del fork | DONE | sprint-0 |
 | E-1 Dock y barra de apps | DONE | sprint-1 |
-| E-2 Controles de ventana | en curso | sprint-2 |
+| E-2 Controles de ventana | DONE | sprint-2 |
 
 ## Bloqueos y pendientes
 - Deuda S-2.1: filtro por display, excluir Recents, update() fuera del hilo principal, aviso si Shizuku cae (en la story).
