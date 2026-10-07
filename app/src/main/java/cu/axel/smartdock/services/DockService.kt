@@ -54,6 +54,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -1390,8 +1391,10 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             updateNavigationBar()
         } else if (preference.startsWith("enable_qs_")) {
             updateQuickSettings()
-        } else if (preference == "round_dock")
+        } else if (preference == "round_dock") {
             updateDockShape()
+            updateDockHeight()
+        }
         else if (preference.startsWith("max_running_apps")) {
             maxApps = sharedPreferences.getString("max_running_apps", "10")!!.toInt()
             maxAppsLandscape =
@@ -1441,8 +1444,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     private fun updateDockHeight() {
-        dockHeight =
-            Utils.dpToPx(context, sharedPreferences.getString("dock_height", "56")!!.toInt())
+        dockHeight = Utils.dockHeightPx(context, sharedPreferences)
         if (isPinned) {
             dockLayoutParams.height = dockHeight
             windowManager.updateViewLayout(dock, dockLayoutParams)
@@ -1535,13 +1537,10 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     private fun updateDockShape() {
-        dockLayout.setBackgroundResource(
-            if (sharedPreferences.getBoolean(
-                    "round_dock",
-                    false
-                )
-            ) R.drawable.round_rect else R.drawable.rect
-        )
+        val round = sharedPreferences.getBoolean("round_dock", true)
+        dockLayout.setBackgroundResource(if (round) R.drawable.round_rect else R.drawable.rect)
+        val margin = if (round) resources.getDimensionPixelSize(R.dimen.dock_float_margin) else 0
+        (dockLayout.layoutParams as ViewGroup.MarginLayoutParams).setMargins(margin, 0, margin, margin)
         updateDockBackgroundColor()
     }
 
@@ -2198,8 +2197,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             true
         }
 
-        dockHeight =
-            Utils.dpToPx(context, sharedPreferences.getString("dock_height", "56")!!.toInt())
+        dockHeight = Utils.dockHeightPx(context, sharedPreferences)
         dockLayoutParams =
             Utils.makeWindowParams(-1, dockHeight, context, preferSecondaryDisplay)
         dockLayoutParams.screenOrientation =
