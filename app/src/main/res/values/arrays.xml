@@ -4,6 +4,7 @@
         <item>@string/dark</item>
         <item>@string/black</item>
         <item>@string/transparent</item>
+        <item>@string/fully_transparent</item>
         <item>@string/material_u</item>
         <item>@string/custom</item>
     </string-array>
@@ -12,6 +13,7 @@
         <item>dark</item>
         <item>black</item>
         <item>transparent</item>
+        <item>fully_transparent</item>
         <item>material_u</item>
         <item>custom</item>
     </string-array>

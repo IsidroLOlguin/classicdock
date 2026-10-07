@@ -206,8 +206,7 @@ class NotificationLayout(
     }
 
     private fun createNotificationLayout() {
-        dockHeight =
-            Utils.dpToPx(context, sharedPreferences.getString("dock_height", "56")!!.toInt())
+        dockHeight = Utils.dockHeightPx(context, sharedPreferences)
         notificationLayoutParams = Utils.makeWindowParams(
             Utils.dpToPx(context, 300), LinearLayout.LayoutParams.WRAP_CONTENT, context,
             sharedPreferences.getBoolean("prefer_last_display", false)

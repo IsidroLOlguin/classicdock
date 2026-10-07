@@ -1,0 +1,84 @@
+# Backlog — ClassicDock
+
+## Épicas
+| ID | Épica | Objetivo | Cubre | Orden sugerido |
+|---|---|---|---|---|
+| E-0 | Identidad del fork | Instalable junto al original, con créditos y despliegue de un comando | FR-01, FR-08 | 1 |
+| E-1 | Dock y barra de apps | Aspecto DeX clásico | FR-02..FR-07 | 2 |
+
+## Stories
+### S-0.1 — Rebrand (rama `feature/rebrand`)
+- Como Isidro quiero instalar ClassicDock junto a Smart Dock para probarlo sin perder el original
+- Cubre: FR-01
+- Complejidad: S
+- Depende de: n/a
+- Criterios de aceptación:
+  - Given el build When se instala Then el paquete es `dev.isidro.classicdock` y el nombre visible es «ClassicDock»
+  - Given el repo When se abre Then README y NOTICE.md traen créditos a Smart Dock y YoukiDEX y la licencia GPL-3.0
+
+### S-0.2 — Script de despliegue (rama `feature/deploy-script`)
+- Como Isidro quiero un solo comando para compilar, instalar y dar permisos
+- Cubre: FR-08
+- Complejidad: S
+- Depende de: S-0.1
+- Criterios de aceptación:
+  - Given la tablet conectada When corro `scripts/deploy.sh` Then compila, instala y otorga `WRITE_SECURE_SETTINGS` sin pasos manuales
+
+### S-1.1 — Íconos de 44dp y celda unificada (rama `feature/icon-size`)
+- Como Isidro quiero íconos más grandes y parejos sin que la fila se recorte
+- Cubre: FR-02
+- Complejidad: S
+- Depende de: S-0.2
+- Criterios de aceptación:
+  - Given el dock con 10 apps abiertas When se muestra Then los íconos miden 44dp y la fila no se recorta ni deja huecos
+  - Given el código When se busca el 52dp fijo Then ya no existe; el ancho sale de un solo valor
+
+### S-1.2 — Dock flotante (rama `feature/floating-dock`)
+- Como Isidro quiero el dock flotante con margen y esquinas redondeadas
+- Cubre: FR-03
+- Complejidad: M
+- Depende de: S-1.1
+- Criterios de aceptación:
+  - Given `round_dock` activo When se muestra Then el dock flota con 8dp de margen y esquinas de 20dp
+  - Given el dock flotante When abro panel rápido, notificaciones, menú contextual y popups Then aparecen pegados sobre el dock, sin solaparse ni dejar hueco
+  - Given el dock oculto When lo activo Then la zona de activación sigue funcionando
+
+### S-1.3 — Transparencia total (rama `feature/transparent-mode`)
+- Como Isidro quiero un tema totalmente transparente además del translúcido
+- Cubre: FR-04
+- Complejidad: S
+- Depende de: S-1.2
+- Criterios de aceptación:
+  - Given el selector de tema When elijo `fully_transparent` Then el fondo del dock queda con alpha 0 y los íconos siguen legibles
+  - Given tema transparente When veo píldoras y panel Then no hay bloques opacos desentonando
+
+### S-1.4 — Indicadores de app abierta (rama `feature/running-indicators`)
+- Como Isidro quiero distinguir la app activa de las abiertas en segundo plano
+- Cubre: FR-05
+- Complejidad: S
+- Depende de: S-1.1
+- Criterios de aceptación:
+  - Given una app activa When miro el dock Then veo barra 16x3dp `#CCFFFFFF`; las demás abiertas muestran punto 4x4dp
+  - Given sin Shizuku (UsageStats) When el id de tarea es -1 Then no hay fallo y el indicador se oculta
+
+### S-1.5 — Bandeja en píldora con reloj aparte (rama `feature/tray-pill`)
+- Como Isidro quiero la bandeja de estado agrupada como en el DeX clásico
+- Cubre: FR-06
+- Complejidad: M
+- Depende de: S-1.2
+- Criterios de aceptación:
+  - Given el dock When veo la derecha Then wifi, volumen, bluetooth y batería van en una píldora de 14dp y el reloj queda fuera
+  - Given un fondo claro u oscuro When veo el texto Then es legible
+
+### S-1.6 — Animación mostrar/ocultar (rama `feature/dock-animation`)
+- Como Isidro quiero que el dock aparezca con fade y escala suave
+- Cubre: FR-07
+- Complejidad: S
+- Depende de: S-1.2
+- Criterios de aceptación:
+  - Given el dock oculto When lo activo Then aparece con fade y escala desde 0.90 en 180 ms, y al ocultarse hace lo inverso
+
+## Historial de cambios
+| Fecha | Cambio | Motivo | Sprint origen |
+|---|---|---|---|
+| 2026-10-06 | Backlog inicial | Alcance v1 aprobado | n/a |

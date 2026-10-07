@@ -1,58 +1,32 @@
 <div align="center">
-  <h1>Smart Dock</h1>
-  A user-friendly desktop mode launcher that offers a modern and customizable user interface
+  <h1>ClassicDock</h1>
+  Fork de Smart Dock con el dock y la barra de apps al estilo del DeX clásico, inspirado en YoukiDEX
 </div>
 
-![Screenshot](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png)
+ClassicDock parte de [Smart Dock](https://github.com/axel358/smartdock) de axel358 y toma como referencia visual a [YoukiDEX](https://github.com/mrYouki/YoukiDex-Android-Desktop) de mrYouki (archivado). Solo cambia el aspecto del dock y de la barra de apps; el resto de la lógica es la de Smart Dock.
 
-## Main features
-- Very customizable, icons, colors, shapes, sounds
-- Multi window support
-- Keyboard shortcuts
-- Support for both desktop and tablet layouts
-- Compatible with Android 10 and above, no root required
+Se instala junto a Smart Dock original (`dev.isidro.classicdock`), sin conflicto.
 
-## Install
+## Licencia y créditos
+- GPL-3.0, igual que ambos proyectos. Ver [LICENSE](LICENSE).
+- Atribución y procedencia de cualquier código portado: [NOTICE.md](NOTICE.md).
+- Colaboradores de Smart Dock: [Contributors.md](Contributors.md).
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-    alt="Get it on F-Droid"
-    height="80">](https://f-droid.org/packages/cu.axel.smartdock)
+## Uso
 
-You can grab the latest release from F-Droid
+### Permisos restringidos
+En algunos dispositivos los permisos de Accesibilidad y Notificaciones no están disponibles. Ve a Ajustes > Apps > ClassicDock > menú de tres puntos > Permitir ajustes restringidos.
 
-Note: The application should be installed as a system app in order to obtain the right permissions.
-Alternatively you can use [Shizuku](https://shizuku.rikka.app).
-
-## Usage
-
-### Grant restricted permissions: 
-On some devices Accessibility and Notification permissions might not be available. To solve this go to:  System Settings > Apps > Smartdock > 3 Dot menu (Top right corner) > Allow restricted permissions
-
-### Secure settings
-To grant secure settings permissions run the following command on an adb or root shell:
+### Ajustes seguros
+Ejecuta en un shell de adb o root:
 ```
-pm grant cu.axel.smartdock android.permission.WRITE_SECURE_SETTINGS
+pm grant dev.isidro.classicdock android.permission.WRITE_SECURE_SETTINGS
 ```
 
-### Hide navigation bar
-You might also want to hide the Android navigation bar.
-[See hiding navigation bar](HideNav.md)
+Con `scripts/deploy.sh` se compila, instala y otorga el permiso en un solo comando.
 
-## Get help and ask questions 
+### Ocultar la barra de navegación
+[Ver cómo ocultar la barra de navegación](HideNav.md)
 
-Telegram support group: https://t.me/smartdock358
-
-## Support the project
-
-If you find this project useful or it has helped you in any way, consider showing your appreciation and supporting its ongoing development. 
-
-Bitcoin Address:
-```
-bc1qzc0jnpzk4g838t56jshvt4j5a2a5dgfx5w9k5a
-```
-
-Thank you for your support!
-
-## Contributors
-
-[See contributors](Contributors.md)
+## Desarrollo
+Ramas: `feature/*` → `dev` → `master`. Para traer cambios de Smart Dock, ver `docs/maintenance.md`. Plan y requisitos en `docs/sdlc/`.

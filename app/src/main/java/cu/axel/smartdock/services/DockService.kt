@@ -54,6 +54,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -784,7 +785,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         dockHandler.removeCallbacksAndMessages(null)
         updateRunningTasks()
-        val anim = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+        val anim = AnimationUtils.loadAnimation(context, R.anim.dock_show)
         dockLayout.visibility = View.VISIBLE
         dockLayout.startAnimation(anim)
     }
@@ -807,7 +808,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         dockHandler.removeCallbacksAndMessages(null)
         dockHandler.postDelayed({
             if (!isPinned) {
-                val animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+                val animation = AnimationUtils.loadAnimation(context, R.anim.dock_hide)
                 animation.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(p1: Animation) {}
                     override fun onAnimationEnd(p1: Animation) {
@@ -1390,8 +1391,10 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             updateNavigationBar()
         } else if (preference.startsWith("enable_qs_")) {
             updateQuickSettings()
-        } else if (preference == "round_dock")
+        } else if (preference == "round_dock") {
             updateDockShape()
+            updateDockHeight()
+        }
         else if (preference.startsWith("max_running_apps")) {
             maxApps = sharedPreferences.getString("max_running_apps", "10")!!.toInt()
             maxAppsLandscape =
@@ -1441,8 +1444,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     private fun updateDockHeight() {
-        dockHeight =
-            Utils.dpToPx(context, sharedPreferences.getString("dock_height", "56")!!.toInt())
+        dockHeight = Utils.dockHeightPx(context, sharedPreferences)
         if (isPinned) {
             dockLayoutParams.height = dockHeight
             windowManager.updateViewLayout(dock, dockLayoutParams)
@@ -1479,7 +1481,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                 apps.add(DockApp(pinnedApp.name, pinnedApp.packageName, pinnedApp.icon))
             }
 
-        val gridSize = Utils.dpToPx(context, 52)
+        val gridSize = context.resources.getDimensionPixelSize(R.dimen.dock_icon_size) +
+            2 * context.resources.getDimensionPixelSize(R.dimen.dock_icon_margin)
 
         //TODO: We can eliminate another for
         //TODO: Don't do anything if tasks has not changed
@@ -1534,13 +1537,11 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     private fun updateDockShape() {
-        dockLayout.setBackgroundResource(
-            if (sharedPreferences.getBoolean(
-                    "round_dock",
-                    false
-                )
-            ) R.drawable.round_rect else R.drawable.rect
-        )
+        val round = sharedPreferences.getBoolean("round_dock", true)
+        dockLayout.setBackgroundResource(if (round) R.drawable.round_rect else R.drawable.rect)
+        val margin = if (round) resources.getDimensionPixelSize(R.dimen.dock_float_margin) else 0
+        (dockLayout.layoutParams as ViewGroup.MarginLayoutParams).setMargins(margin, 0, margin, margin)
+        dockLayout.requestLayout()
         updateDockBackgroundColor()
     }
 
@@ -1599,7 +1600,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         val statusEnabled = bluetoothEnabled || batteryEnabled || wifiEnabled || volumeEnabled
         statusArea.isVisible = notifEnabled || statusEnabled
-        statusArea.setPadding(if (statusEnabled) Utils.dpToPx(context, 4) else 0)
+        val padH = if (statusEnabled) Utils.dpToPx(context, 8) else 0
+        val padV = if (statusEnabled) Utils.dpToPx(context, 4) else 0
+        statusArea.setPadding(padH, padV, padH, padV)
     }
 
     private fun launchAssistant() {
@@ -1942,6 +1945,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         ColorUtils.applySecondaryColor(context, sharedPreferences, pinBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, powerBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, statusArea)
+        statusArea.background.alpha = maxOf(statusArea.background.alpha, 140)
     }
 
     private fun updateCorners() {
@@ -2031,7 +2035,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
     private fun updateDockBackgroundColor() {
         ColorUtils.applyMainColor(context, sharedPreferences, dockLayout)
-        if (sharedPreferences.getBoolean("override_dock_background_alpha", false))
+        if (sharedPreferences.getString("theme", "dark") == "fully_transparent")
+            dockLayout.background.alpha = 0
+        else if (sharedPreferences.getBoolean("override_dock_background_alpha", false))
             applyDockAlpha()
     }
 
@@ -2197,8 +2203,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             true
         }
 
-        dockHeight =
-            Utils.dpToPx(context, sharedPreferences.getString("dock_height", "56")!!.toInt())
+        dockHeight = Utils.dockHeightPx(context, sharedPreferences)
         dockLayoutParams =
             Utils.makeWindowParams(-1, dockHeight, context, preferSecondaryDisplay)
         dockLayoutParams.screenOrientation =

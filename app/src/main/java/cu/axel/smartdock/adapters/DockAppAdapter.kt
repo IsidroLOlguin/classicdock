@@ -60,8 +60,10 @@ class DockAppAdapter(
                 )
 
             viewHolder.runningIndicator.alpha = if (app.tasks[0].id != -1) 1f else 0f
-            viewHolder.runningIndicator.layoutParams.width =
-                Utils.dpToPx(context, if (app.packageName == AppUtils.currentApp) 16 else 8)
+            val active = app.packageName == AppUtils.currentApp
+            viewHolder.runningIndicator.layoutParams.width = Utils.dpToPx(context, if (active) 16 else 4)
+            viewHolder.runningIndicator.layoutParams.height = Utils.dpToPx(context, if (active) 3 else 4)
+            viewHolder.runningIndicator.requestLayout()
 
             if (size > 1) {
                 viewHolder.taskCounter.text = size.toString()

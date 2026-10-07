@@ -41,7 +41,7 @@
             android:title="@string/dock_background_opacity" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="round_dock"
             android:title="@string/round_dock" />
 

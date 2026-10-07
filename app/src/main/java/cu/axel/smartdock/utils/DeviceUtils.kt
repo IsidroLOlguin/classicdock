@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
+import cu.axel.smartdock.BuildConfig
 import cu.axel.smartdock.services.DockService
 import cu.axel.smartdock.utils.DeviceUtils
 import rikka.shizuku.Shizuku
@@ -40,7 +41,7 @@ object DeviceUtils {
     const val ICON_BLACKLIST = "icon_blacklist"
     const val HEADS_UP_ENABLED = "heads_up_notifications_enabled"
     const val SETTING_OVERLAYS = "secure_overlay_settings"
-    private const val SERVICE_NAME = "cu.axel.smartdock/cu.axel.smartdock.services.DockService"
+    private const val SERVICE_NAME = "${BuildConfig.APPLICATION_ID}/cu.axel.smartdock.services.DockService"
     private const val ENABLED_ACCESSIBILITY_SERVICES = "enabled_accessibility_services"
 
     @get:Throws(IOException::class)
@@ -299,7 +300,7 @@ object DeviceUtils {
     }
 
     fun grantPermission(permission: String): Boolean {
-        val result = runAsRoot("pm grant cu.axel.smartdock $permission")
+        val result = runAsRoot("pm grant ${BuildConfig.APPLICATION_ID} $permission")
         return result.isEmpty()
     }
 

@@ -41,6 +41,13 @@ object Utils {
         editor.commit()
     }
 
+    fun dockHeightPx(context: Context, prefs: SharedPreferences): Int {
+        val base = dpToPx(context, prefs.getString("dock_height", "56")!!.toInt())
+        val floating = if (prefs.getBoolean("round_dock", true))
+            context.resources.getDimensionPixelSize(R.dimen.dock_float_margin) else 0
+        return base + floating
+    }
+
     fun dpToPx(context: Context, dp: Int): Int {
         return (dp * context.resources.displayMetrics.density + 0.5f).toInt()
     }

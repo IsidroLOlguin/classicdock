@@ -1,7 +1,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">Smart Dock</string>
+    <string name="app_name">ClassicDock</string>
     <string name="none">None</string>
     <string name="move">Move…</string>
     <string name="ok">OK</string>
@@ -29,7 +29,7 @@
     <string name="overlays_in_settings">Allow overlays on Settings</string>
     <string name="overlays_in_settings_desc">Used to keep the dock visible while the Settings app is open. This allows <b>any app</b> to display content on top of the Settings app not just the Dock. Must be enabled from Developer options</string>
     <string name="write_secure">Write secure settings</string>
-    <string name="write_secure_desc">Needed for advanced settings. This is a special permission that must be granted with root or adb by running: \npm grant cu.axel.smartdock android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="write_secure_desc">Needed for advanced settings. This is a special permission that must be granted with root or adb by running: \npm grant dev.isidro.classicdock android.permission.WRITE_SECURE_SETTINGS</string>
     <string name="manage">Manage…</string>
     <string name="grant">Grant</string>
     <string name="enable">Enable</string>
@@ -40,7 +40,8 @@
     <string name="theme_title">Theme</string>
     <string name="dark">Dark</string>
     <string name="black">Black</string>
-    <string name="transparent">Transparent</string>
+    <string name="transparent">Translucent</string>
+    <string name="fully_transparent">Fully transparent</string>
     <string name="material_u">Material U</string>
     <string name="custom">Custom</string>
     <string name="theme_main_color_title">Main color</string>
@@ -301,8 +302,8 @@
     <string name="display_settings">Display settings</string>
 
     <!-- Toasts -->
-    <string name="start_message">Smart Dock started</string>
-    <string name="enable_access_help">Find and enable Smart Dock service</string>
+    <string name="start_message">ClassicDock started</string>
+    <string name="enable_access_help">Find and enable ClassicDock service</string>
 
     <!-- Crash dialog -->
     <string name="something_wrong">Something went wrong</string>
@@ -317,13 +318,13 @@
     <string name="dock_background_opacity">Background opacity</string>
     <string name="override_dock_background_opacity">Override background opacity</string>
     <string name="dock_hidden">Dock hidden</string>
-    <string name="dock_hidden_message_handle">Smart Dock has been hidden, you can activate it again by tapping on the handle</string>
+    <string name="dock_hidden_message_handle">ClassicDock has been hidden, you can activate it again by tapping on the handle</string>
     <string name="close">Close</string>
     <string name="hide_notifications">Hide notifications</string>
     <string name="hide_notification_panel">Hide notifications for this app from the panel? You can configure hidden notifications in Notification panel settings</string>
-    <string name="dock_hidden_message_swipe">Smart Dock has been hidden, you can activate it again by:\n- Swiping up from the bottom of the screen (phone)\n- Hovering the mouse pointer near the bottom of the screen (desktop)</string>
+    <string name="dock_hidden_message_swipe">ClassicDock has been hidden, you can activate it again by:\n- Swiping up from the bottom of the screen (phone)\n- Hovering the mouse pointer near the bottom of the screen (desktop)</string>
     <string name="shizuku_permission">Shizuku access</string>
-    <string name="shizuku_permission_desc">Allows Smart Dock to access some restricted system functions through Shizuku</string>
+    <string name="shizuku_permission_desc">Allows ClassicDock to access some restricted system functions through Shizuku</string>
     <string name="shizuku_is_not_running">Shizuku is not running</string>
     <string name="resize">Resize…</string>
     <string name="snap">Snap…</string>

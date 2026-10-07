@@ -47,8 +47,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/search_background"
-                android:padding="4dp">
+                android:background="@drawable/tray_pill"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp">
 
                 <TextView
                     android:id="@+id/notifications_btn"
@@ -63,22 +64,22 @@
 
                 <ImageView
                     android:id="@+id/volume_btn"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_margin="3dp"
                     android:src="@drawable/ic_volume" />
 
                 <ImageView
                     android:id="@+id/bluetooth_btn"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_margin="3dp"
                     android:src="@drawable/ic_bluetooth_off" />
 
                 <ImageView
                     android:id="@+id/wifi_btn"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_margin="3dp"
                     android:src="@drawable/ic_wifi_on" />
 
