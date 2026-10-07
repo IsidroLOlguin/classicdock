@@ -1541,6 +1541,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         dockLayout.setBackgroundResource(if (round) R.drawable.round_rect else R.drawable.rect)
         val margin = if (round) resources.getDimensionPixelSize(R.dimen.dock_float_margin) else 0
         (dockLayout.layoutParams as ViewGroup.MarginLayoutParams).setMargins(margin, 0, margin, margin)
+        dockLayout.requestLayout()
         updateDockBackgroundColor()
     }
 
