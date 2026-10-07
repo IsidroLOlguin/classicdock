@@ -11,7 +11,7 @@ Como Isidro quiero minimizar y cerrar visibles sobre la app en primer plano, tam
 2. Given una ventana flotante (`windowingMode == FREEFORM`) When la miro Then la barra no se muestra.
 3. Given los dos botones When los toco Then minimizan (Home) o cierran (`removeTask`) la tarea en primer plano.
 4. Given que la tarea en primer plano es launcher, systemui o ClassicDock Then la barra no se muestra y no actúa sobre ellos.
-5. Given Shizuku sin correr (id = -1 o wrapper nulo) Then cerrar no hace nada y no hay crash; minimizar (Home) sigue funcionando.
+5. Given Shizuku sin correr (wrapper nulo) Then la barra no se muestra (sin Shizuku no se conoce la tarea en primer plano); con id <= 0 o tarea nula, cerrar no hace nada y no hay crash.
 6. La barra no tapa contenido relevante de la app: superposición fina, altura medida en captura.
 
 ## Diseño (restricciones)
@@ -54,3 +54,6 @@ Probando `am stack move-task 48 46 true` (moveTaskToRootTask) para pasar la calc
 ### No hecho
 - Sin ajuste de posición/ancho por preferencia, sin animación de la barra, sin aviso cuando Shizuku no corre (no pedidos).
 - No se tocó la lógica existente del menú contextual ni `updateRunningTasks`.
+
+## QA (2026-10-07, ciclo 1)
+Pasa: AC1-AC4 y AC6 verificados en la tablet (capturas `docs/progress/s-2.1-*.png`; barra 162x49 px, 2.7 % del alto); AC5 por unit. Pendiente conocido: el filtro de systemui solo lo cubre el unit test; `update()` y la vista no tienen test.

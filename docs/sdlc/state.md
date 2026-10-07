@@ -11,7 +11,7 @@
 ## Etapa actual
 - Loop: interno
 - Artefacto/Sprint en curso: sprint-2 (E-2), plan aprobado
-- Story en curso y fase: S-2.0 DONE; sigue S-2.1 (barra de controles)
+- Story en curso y fase: S-2.1 QA pasa; espera gate de code-review y merge a dev
 
 ## Gates cruzados
 | Fecha | Artefacto/Story | Notas |
