@@ -33,8 +33,6 @@ class ActivityManagerWrapper {
         }
     }
 
-    fun isAlive() = binder?.isBinderAlive == true && activityManager != null
-
     fun getRunningTasks(max: Int): List<ActivityManager.RunningTaskInfo> {
         val tasks = activityManager?.getTasks(max)
         return tasks ?: emptyList()
