@@ -29,6 +29,7 @@
 | E-1 Dock y barra de apps | DONE | sprint-1 |
 
 ## Bloqueos y pendientes
+- Sprint-2 (E-2, S-2.1 barra de controles de ventana) por planear; decisión de Isidro 2026-10-07 en backlog.md.
 - Merge dev a master y push a origin: esperan confirmación de Isidro.
 - Mantenimiento y trampas en docs/maintenance.md.
 

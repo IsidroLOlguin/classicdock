@@ -5,6 +5,7 @@
 |---|---|---|---|---|
 | E-0 | Identidad del fork | Instalable junto al original, con créditos y despliegue de un comando | FR-01, FR-08 | 1 |
 | E-1 | Dock y barra de apps | Aspecto DeX clásico | FR-02..FR-07 | 2 |
+| E-2 | Controles de ventana | Minimizar, maximizar y cerrar siempre visibles | FR-09 | 3 |
 
 ## Stories
 ### S-0.1 — Rebrand (rama `feature/rebrand`)
@@ -78,7 +79,19 @@
 - Criterios de aceptación:
   - Given el dock oculto When lo activo Then aparece con fade y escala desde 0.90 en 180 ms, y al ocultarse hace lo inverso
 
+### S-2.1 — Barra de controles de ventana (rama `feature/window-controls`)
+- Como Isidro quiero minimizar, maximizar y cerrar visibles en cualquier ventana, también a pantalla completa
+- Cubre: FR-09
+- Complejidad: M
+- Depende de: S-1.2
+- Criterios de aceptación:
+  - Given una app a pantalla completa When miro la parte superior Then veo una barra fina de ClassicDock con minimizar, maximizar y cerrar
+  - Given una ventana flotante When la miro Then no hay botones duplicados con los de Samsung
+  - Given los tres botones When los toco Then minimizan, maximizan o cierran la tarea en primer plano
+- Preguntas abiertas: cómo cerrar la tarea sin Shizuku; qué hacer en flotantes (ocultar la barra o integrarse); ver `DockService.kt` ~638 (acciones de tarea) y `AppUtils.makeLaunchBounds`.
+
 ## Historial de cambios
 | Fecha | Cambio | Motivo | Sprint origen |
 |---|---|---|---|
 | 2026-10-06 | Backlog inicial | Alcance v1 aprobado | n/a |
+| 2026-10-07 | E-2 y S-2.1 | Isidro pidió botones de ventana siempre visibles; elegida barra propia (DeX descartado: no activable por adb) | n/a |
