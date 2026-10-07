@@ -63,6 +63,7 @@ class DockAppAdapter(
             val active = app.packageName == AppUtils.currentApp
             viewHolder.runningIndicator.layoutParams.width = Utils.dpToPx(context, if (active) 16 else 4)
             viewHolder.runningIndicator.layoutParams.height = Utils.dpToPx(context, if (active) 3 else 4)
+            viewHolder.runningIndicator.requestLayout()
 
             if (size > 1) {
                 viewHolder.taskCounter.text = size.toString()
