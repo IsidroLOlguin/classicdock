@@ -1,7 +1,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">Smart Dock</string>
+    <string name="app_name">ClassicDock</string>
     <string name="none">無</string>
     <string name="move">移動</string>
     <string name="ok">確定</string>
@@ -29,7 +29,7 @@
     <string name="overlays_in_settings">允許在設定中疊加</string>
     <string name="overlays_in_settings_desc">允許在設定應用程式開啟時保持 Dock 可見。這允許任何應用程式顯示內容<b>在任何應用程式上</b>，不僅僅是 Dock。必須從開發者選項中啟用</string>
     <string name="write_secure">寫入保護設定</string>
-    <string name="write_secure_desc">需要使用進階設定。這是一個特殊權限，必須使用 root 或 adb 執行：\npm grant cu.axel.smartdock android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="write_secure_desc">需要使用進階設定。這是一個特殊權限，必須使用 root 或 adb 執行：\npm grant dev.isidro.classicdock android.permission.WRITE_SECURE_SETTINGS</string>
     <string name="manage">管理…</string>
     <string name="grant">授予</string>
     <string name="enable">啟用</string>
