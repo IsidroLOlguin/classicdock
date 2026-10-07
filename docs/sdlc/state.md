@@ -10,8 +10,8 @@
 
 ## Etapa actual
 - Loop: interno
-- Artefacto/Sprint en curso: sprint-3 (E-3) plan aprobado
-- Story en curso y fase: S-3.1 en Dev; dev ya empujado a origin/dev
+- Artefacto/Sprint en curso: sprint-3 (E-3) cerrado
+- Story en curso y fase: ninguna; E-3 DONE
 
 ## Gates cruzados
 | Fecha | Artefacto/Story | Notas |
@@ -24,6 +24,7 @@
 | 2026-10-07 | Plan sprint-2 (E-2) | Aprobado: Shizuku (S-2.0) y barra propia (S-2.1), oculta en flotantes |
 | 2026-10-07 | S-2.1 | Barra min+cerrar (maximizar imposible en Android 16), QA y code-review ok, en dev |
 | 2026-10-07 | Plan sprint-3 (E-3) | Aprobado: S-3.1 única story, salda deuda de S-2.1 |
+| 2026-10-07 | S-3.1 | Deuda de S-2.1 saldada, QA y code-review ok, medido en tablet, en dev; retro sprint-3 |
 | 2026-10-07 | S-0.1, S-0.2 | Rebrand y deploy.sh en dev (push hecho); tablet SM-X910 verificada |
 
 ## Épicas
@@ -32,10 +33,10 @@
 | E-0 Identidad del fork | DONE | sprint-0 |
 | E-1 Dock y barra de apps | DONE | sprint-1 |
 | E-2 Controles de ventana | DONE | sprint-2 |
-| E-3 Deuda de la barra de controles | en curso | sprint-3 |
+| E-3 Deuda de la barra de controles | DONE | sprint-3 |
 
 ## Bloqueos y pendientes
-- Deuda S-2.1 se salda en S-3.1 (sprint-3).
+- Sin verificar de S-3.1: segundo display, rama FAILED, costo de accesibilidad (retro sprint-3).
 - Mantenimiento y trampas en docs/maintenance.md.
 
 ## Decisiones rápidas (que no ameritan ADR)
