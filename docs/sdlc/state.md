@@ -10,8 +10,8 @@
 
 ## Etapa actual
 - Loop: interno
-- Artefacto/Sprint en curso: sprint-3 (E-3) cerrado
-- Story en curso y fase: ninguna; E-3 DONE
+- Artefacto/Sprint en curso: sprint-4 (E-4) plan aprobado 2026-10-07
+- Story en curso y fase: S-4.1, plan listo; después spike y E-5/E-6
 
 ## Gates cruzados
 | Fecha | Artefacto/Story | Notas |
@@ -25,6 +25,7 @@
 | 2026-10-07 | S-2.1 | Barra min+cerrar (maximizar imposible en Android 16), QA y code-review ok, en dev |
 | 2026-10-07 | Plan sprint-3 (E-3) | Aprobado: S-3.1 única story, salda deuda de S-2.1 |
 | 2026-10-07 | S-3.1 | Deuda de S-2.1 saldada, QA y code-review ok, medido en tablet, en dev; retro sprint-3 |
+| 2026-10-07 | Plan sprint-4 (E-4) | Aprobado: S-4.1 única story, barra a la esquina superior derecha |
 | 2026-10-07 | S-0.1, S-0.2 | Rebrand y deploy.sh en dev (push hecho); tablet SM-X910 verificada |
 
 ## Épicas
@@ -34,6 +35,7 @@
 | E-1 Dock y barra de apps | DONE | sprint-1 |
 | E-2 Controles de ventana | DONE | sprint-2 |
 | E-3 Deuda de la barra de controles | DONE | sprint-3 |
+| E-4 Barra de controles fuera del notch | pendiente | sprint-4 |
 
 ## Bloqueos y pendientes
 - Sin verificar de S-3.1: segundo display, rama FAILED, costo de accesibilidad (retro sprint-3).

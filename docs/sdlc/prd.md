@@ -28,6 +28,7 @@ Fork de Smart Dock (GPL-3.0) cuyo dock y barra de apps se parecen al DeX clásic
 | FR-05 | Indicador de app abierta: barra 16x3dp si es la activa, punto 4x4dp si está en segundo plano, color `#CCFFFFFF` | Must |
 | FR-06 | Bandeja derecha: wifi, volumen, bluetooth y batería dentro de una píldora de 14dp; reloj fuera de la píldora | Should |
 | FR-09 | Barra propia con minimizar y cerrar visibles en toda ventana, incluso a pantalla completa | Should |
+| FR-10 | La barra de controles va en la esquina superior derecha, bajo la bandeja de estado, sin tapar la cámara/notch | Should |
 | FR-07 | Animación de mostrar/ocultar con fade y escala 0.90 a 180 ms | Should |
 | FR-08 | `scripts/deploy.sh`: build, instalación y permisos en un comando | Must |
 

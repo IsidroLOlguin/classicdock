@@ -7,6 +7,7 @@
 | E-1 | Dock y barra de apps | Aspecto DeX clásico | FR-02..FR-07 | 2 |
 | E-2 | Controles de ventana | Minimizar y cerrar siempre visibles | FR-09 | 3 |
 | E-3 | Deuda de la barra de controles | Barra correcta por display, sin Recents, sin trabajo en el hilo principal y con aviso si Shizuku cae | FR-09 | 4 |
+| E-4 | Barra de controles fuera del notch | Barra en la esquina superior derecha, bajo wifi/batería | FR-10 | 5 |
 
 ## Stories
 ### S-0.1 — Rebrand (rama `feature/rebrand`)
@@ -111,8 +112,20 @@
   - Given cambios rápidos de app When `update()` corre Then la consulta de tareas no bloquea el hilo principal
   - Given Shizuku caído When toco cerrar Then veo un aviso y la barra no hace nada en silencio
 
+### S-4.1 — Barra de controles bajo la bandeja (rama `feature/controls-bar-corner`)
+- Como Isidro quiero minimizar y cerrar en la esquina superior derecha, bajo los íconos de wifi y batería, para que no queden sobre el notch
+- Cubre: FR-10
+- Complejidad: S
+- Depende de: S-3.1
+- Criterios de aceptación:
+  - Given una app a pantalla completa en la tablet When miro la parte superior Then la barra está en la esquina superior derecha, debajo de la bandeja de estado, y no toca la zona del notch
+  - Given rotación vertical u horizontal When cambia la orientación Then la barra sigue pegada a la esquina derecha, bajo la barra de estado
+  - Given la barra movida When toco minimizar y cerrar Then siguen funcionando igual que en S-3.1 (misma tarea, mismos avisos)
+  - Given el display secundario When hay barra Then se ubica igual en su esquina superior derecha
+
 ## Historial de cambios
 | Fecha | Cambio | Motivo | Sprint origen |
 |---|---|---|---|
 | 2026-10-06 | Backlog inicial | Alcance v1 aprobado | n/a |
 | 2026-10-07 | E-2 y S-2.1 | Isidro pidió botones de ventana siempre visibles; elegida barra propia (DeX descartado: no activable por adb) | n/a |
+| 2026-10-07 | E-4 y S-4.1 | Los botones caían sobre el notch de la tablet; Isidro pidió moverlos a la derecha bajo wifi/batería | n/a |
