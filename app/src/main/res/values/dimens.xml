@@ -2,4 +2,5 @@
 <resources>
     <dimen name="dock_icon_size">44dp</dimen>
     <dimen name="dock_icon_margin">6dp</dimen>
+    <dimen name="dock_float_margin">8dp</dimen>
 </resources>
