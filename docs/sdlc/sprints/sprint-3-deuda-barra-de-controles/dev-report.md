@@ -46,3 +46,23 @@ Decisión de Isidro: con Shizuku caído la barra sigue visible si hay tarea obje
 
 ## Estado del dispositivo al terminar
 Shizuku corriendo, servicio de ClassicDock activo con el build de esta rama instalado. Se quitaron las capturas temporales de `/sdcard`.
+
+## Ronda de code-review
+Commits `d818095` (*.800.png) y `fe77b70` (código). `./gradlew assembleDebug testDebugUnitTest --offline` exit 0, 22 pruebas (`WindowControlsPolicyTest`), 0 fallos.
+
+HACER
+- 1 `close()` recibe `remove: (Int) -> Boolean`; `false` -> nuevo `CloseResult.FAILED` (aviso `close_failed`, values y values-es, mismo aviso en barra + Toast). Test `removeTaskQueDevuelveFalseNoCuentaComoCerrada`.
+- 2 `foregroundPackage` ya no corre en el executor: `update()` y `closeForeground()` lo resuelven en el hilo que llama (principal: evento de accesibilidad, clic, `postDelayed`) y lo guardan en `@Volatile fallbackPackage`; el executor solo lee el String. Se guarda en cada llamada (no solo en la que gana el `queued`) para que una ráfaga no deje un paquete viejo. No se reciclan nodos (el repo no lo hace en ningún lado; en API 33+ es no-op, minSdk es 30, así que en 30-32 el `root` sigue sin reciclarse, igual que antes).
+- 4 `runOnTask` y sus 5 pruebas borrados (sin uso en producción); lo que cubrían ahora lo cubre `close`. También se borró `INVALID_DISPLAY_ID` y su prueba (sin uso: ver 3).
+- 5 `Log.w` de la excepción de `removeTask` (en la barra, el policy sigue puro). `SecurityException` y `RemoteException` (incluye `DeadObjectException`) -> `UNAVAILABLE` («Shizuku no disponible»); cualquier otra excepción -> `FAILED`. Pruebas incluidas.
+- 7 `getRunningTasks(20)` (constante `MAX_TASKS`).
+- 9 `git rm --cached` de `s-3.1-{fullscreen,recents}.crop.800.png` (los únicos `.800.png` que añade esta rama respecto a `dev`) y `*.800.png` en `.gitignore`. Los 13 `.800.png` de S-1.x/S-2.x ya vienen de `dev`; no los toqué (el story 2.1 los cita como evidencia); siguen trackeados aunque el patrón los ignore.
+
+JUZGAR
+- 3 Hecho. `getRunningTasks` que lanza o `displayId` por reflexión ausente ahora caen al fallback de accesibilidad con `Log.w`, en vez de ocultar la barra: el usuario conserva Minimizar y Cerrar avisa. Sustituye la decisión previa «displayId ilegible oculta la barra». Coste: una consulta de accesibilidad por cada `update()` aunque Shizuku vaya bien (sin medir; las ráfagas son eventos del propio servicio). Si pesa, resolverla solo cuando `am == null`, a costa de volver al caso 3 sin fallback.
+- 6 Eran reales los tres. `update()` ya no sale temprano con aviso: si el resultado es «sin objetivo» (cambio a launcher/Recents) cierra el aviso (`endNotice`, cancela el timer) y oculta la barra; `warn()` ignora el resultado tardío si la barra no está visible o ya hay `destroyed`; `destroy()` cancela `hideNotice` y `hideNotice`/el `view.post` salen si `destroyed`. Medido sin Shizuku: Cerrar -> aviso (barra 384 px de ancho); Home 0.6 s después -> `mViewVisibility=0x8` (antes el aviso aguantaba 3 s sobre el launcher). Con warning activo y la app aún al frente, la barra se mantiene (el update del propio tap ya no la oculta; visto en la tablet).
+- 8 No cambié el color. La barra es una píldora de fondo fijo `#D9292929` con iconos fijos `#FFFFFFFF`; un color de tema (claro en tema oscuro, oscuro en tema claro) dejaría texto oscuro sobre fondo oscuro. Sí añadí `maxLines=1`, `ellipsize=end` y `maxWidth=320dp`. Medido en la tablet: texto en español 384 px de barra total, en inglés (`cmd locale set-app-locales ... en-US`, ya restaurado) 492 px = 281 dp, ambos completos y sin recorte; maxWidth solo protege pantallas angostas.
+
+Medido en tablet SM-X910 (build nuevo, servicio reiniciado): con Shizuku, Brave a pantalla completa -> barra `0x0`; Cerrar -> tarea fuera de `am stack list` y barra `0x8` en <0.7 s (2 de 2 corridas; una corrida justo tras reiniciar el servicio la vio `0x0` a los 2 s y `0x8` poco después, no se reprodujo). Sin Shizuku: Cerrar -> aviso, Home -> oculta.
+No verificado: rama `FAILED` en dispositivo (no hay forma de forzar `removeTask` a `false`), cada ruta de 3 con un ROM sin `displayId`, y el coste de la consulta de accesibilidad.
+Estado final: Shizuku corriendo (pid 10220, reiniciado con `libshizuku.so`), servicio de ClassicDock activo, tablet en Home, locale de la app restaurado.
