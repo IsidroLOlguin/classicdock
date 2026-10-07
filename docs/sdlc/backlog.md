@@ -6,6 +6,7 @@
 | E-0 | Identidad del fork | Instalable junto al original, con créditos y despliegue de un comando | FR-01, FR-08 | 1 |
 | E-1 | Dock y barra de apps | Aspecto DeX clásico | FR-02..FR-07 | 2 |
 | E-2 | Controles de ventana | Minimizar y cerrar siempre visibles | FR-09 | 3 |
+| E-3 | Deuda de la barra de controles | Barra correcta por display, sin Recents, sin trabajo en el hilo principal y con aviso si Shizuku cae | FR-09 | 4 |
 
 ## Stories
 ### S-0.1 — Rebrand (rama `feature/rebrand`)
@@ -98,6 +99,17 @@
   - Given una ventana flotante When la miro Then no hay botones duplicados con los de Samsung
   - Given los dos botones When los toco Then minimizan o cierran la tarea en primer plano
 - Preguntas abiertas: cómo cerrar la tarea sin Shizuku; qué hacer en flotantes (ocultar la barra o integrarse); ver `DockService.kt` ~638 (acciones de tarea) y `AppUtils.makeLaunchBounds`.
+
+### S-3.1 — Saldar deuda de la barra de controles (rama `feature/window-controls-debt`)
+- Como Isidro quiero que la barra de controles actúe sobre la tarea correcta y avise cuando no puede cerrar
+- Cubre: FR-09
+- Complejidad: M
+- Depende de: S-2.1
+- Criterios de aceptación:
+  - Given la barra en el display principal y una app abierta en el secundario When toco cerrar Then solo se cierra la tarea del display de la barra
+  - Given la pantalla de Recents abierta When miro la parte superior Then la barra no aparece
+  - Given cambios rápidos de app When `update()` corre Then la consulta de tareas no bloquea el hilo principal
+  - Given Shizuku caído When toco cerrar Then veo un aviso y la barra no hace nada en silencio
 
 ## Historial de cambios
 | Fecha | Cambio | Motivo | Sprint origen |

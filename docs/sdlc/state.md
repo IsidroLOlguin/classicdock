@@ -10,8 +10,8 @@
 
 ## Etapa actual
 - Loop: interno
-- Artefacto/Sprint en curso: sprint-2 (E-2) cerrado
-- Story en curso y fase: ninguna; E-2 DONE, sin push a origin/dev
+- Artefacto/Sprint en curso: sprint-3 (E-3) plan aprobado
+- Story en curso y fase: S-3.1 en Dev; dev ya empujado a origin/dev
 
 ## Gates cruzados
 | Fecha | Artefacto/Story | Notas |
@@ -23,6 +23,7 @@
 | 2026-10-07 | S-2.0 | Shizuku v13.6.0 en tablet, ids de tarea reales medidos; docs/progress/s-2.0-shizuku.png |
 | 2026-10-07 | Plan sprint-2 (E-2) | Aprobado: Shizuku (S-2.0) y barra propia (S-2.1), oculta en flotantes |
 | 2026-10-07 | S-2.1 | Barra min+cerrar (maximizar imposible en Android 16), QA y code-review ok, en dev |
+| 2026-10-07 | Plan sprint-3 (E-3) | Aprobado: S-3.1 única story, salda deuda de S-2.1 |
 | 2026-10-07 | S-0.1, S-0.2 | Rebrand y deploy.sh en dev (push hecho); tablet SM-X910 verificada |
 
 ## Épicas
@@ -31,9 +32,10 @@
 | E-0 Identidad del fork | DONE | sprint-0 |
 | E-1 Dock y barra de apps | DONE | sprint-1 |
 | E-2 Controles de ventana | DONE | sprint-2 |
+| E-3 Deuda de la barra de controles | en curso | sprint-3 |
 
 ## Bloqueos y pendientes
-- Deuda S-2.1: filtro por display, excluir Recents, update() fuera del hilo principal, aviso si Shizuku cae (en la story).
+- Deuda S-2.1 se salda en S-3.1 (sprint-3).
 - Mantenimiento y trampas en docs/maintenance.md.
 
 ## Decisiones rápidas (que no ameritan ADR)
