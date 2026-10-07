@@ -13,13 +13,13 @@
 	<RelativeLayout
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
-		android:layout_marginEnd="6dp"
-		android:layout_marginStart="6dp"
+		android:layout_marginEnd="@dimen/dock_icon_margin"
+		android:layout_marginStart="@dimen/dock_icon_margin"
 		android:layout_marginTop="8dp">
 
 		<ImageView
-			android:layout_height="40dp"
-			android:layout_width="40dp"
+			android:layout_height="@dimen/dock_icon_size"
+			android:layout_width="@dimen/dock_icon_size"
 			android:src="@android:drawable/ic_delete"
 			android:id="@+id/icon_iv"
 			android:layout_centerInParent="true"/>

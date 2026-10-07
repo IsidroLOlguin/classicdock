@@ -1479,7 +1479,8 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
                 apps.add(DockApp(pinnedApp.name, pinnedApp.packageName, pinnedApp.icon))
             }
 
-        val gridSize = Utils.dpToPx(context, 52)
+        val gridSize = context.resources.getDimensionPixelSize(R.dimen.dock_icon_size) +
+            2 * context.resources.getDimensionPixelSize(R.dimen.dock_icon_margin)
 
         //TODO: We can eliminate another for
         //TODO: Don't do anything if tasks has not changed

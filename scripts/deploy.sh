@@ -11,5 +11,6 @@ adb install -r "$APK"
 adb shell pm grant "$APP_ID" android.permission.WRITE_SECURE_SETTINGS
 adb shell appops set "$APP_ID" SYSTEM_ALERT_WINDOW allow
 adb shell appops set "$APP_ID" ACCESS_RESTRICTED_SETTINGS allow
+adb shell appops set "$APP_ID" GET_USAGE_STATS allow
 
 echo "Listo. A mano en la tablet: activar el servicio de accesibilidad de ClassicDock."
