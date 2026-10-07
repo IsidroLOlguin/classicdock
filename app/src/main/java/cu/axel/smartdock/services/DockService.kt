@@ -785,7 +785,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         dockHandler.removeCallbacksAndMessages(null)
         updateRunningTasks()
-        val anim = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+        val anim = AnimationUtils.loadAnimation(context, R.anim.dock_show)
         dockLayout.visibility = View.VISIBLE
         dockLayout.startAnimation(anim)
     }
@@ -808,7 +808,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         dockHandler.removeCallbacksAndMessages(null)
         dockHandler.postDelayed({
             if (!isPinned) {
-                val animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+                val animation = AnimationUtils.loadAnimation(context, R.anim.dock_hide)
                 animation.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart(p1: Animation) {}
                     override fun onAnimationEnd(p1: Animation) {
