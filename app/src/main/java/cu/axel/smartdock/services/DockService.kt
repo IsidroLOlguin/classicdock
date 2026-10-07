@@ -2032,7 +2032,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
     private fun updateDockBackgroundColor() {
         ColorUtils.applyMainColor(context, sharedPreferences, dockLayout)
-        if (sharedPreferences.getBoolean("override_dock_background_alpha", false))
+        if (sharedPreferences.getString("theme", "dark") == "fully_transparent")
+            dockLayout.background.alpha = 0
+        else if (sharedPreferences.getBoolean("override_dock_background_alpha", false))
             applyDockAlpha()
     }
 
