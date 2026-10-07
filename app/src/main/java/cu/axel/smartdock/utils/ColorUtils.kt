@@ -117,7 +117,7 @@ object ColorUtils {
                 secondaryColor = manipulateColor(mainColor, 2.2f)
             }
 
-            "transparent" -> {
+            "transparent", "fully_transparent" -> {
                 mainColor = "#050505".toColorInt()
                 secondaryColor = manipulateColor(mainColor, 2f)
                 alpha = 225

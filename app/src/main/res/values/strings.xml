@@ -40,7 +40,8 @@
     <string name="theme_title">Theme</string>
     <string name="dark">Dark</string>
     <string name="black">Black</string>
-    <string name="transparent">Transparent</string>
+    <string name="transparent">Translucent</string>
+    <string name="fully_transparent">Fully transparent</string>
     <string name="material_u">Material U</string>
     <string name="custom">Custom</string>
     <string name="theme_main_color_title">Main color</string>
