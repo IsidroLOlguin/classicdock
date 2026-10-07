@@ -1600,7 +1600,9 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
         val statusEnabled = bluetoothEnabled || batteryEnabled || wifiEnabled || volumeEnabled
         statusArea.isVisible = notifEnabled || statusEnabled
-        statusArea.setPadding(if (statusEnabled) Utils.dpToPx(context, 4) else 0)
+        val padH = if (statusEnabled) Utils.dpToPx(context, 8) else 0
+        val padV = if (statusEnabled) Utils.dpToPx(context, 4) else 0
+        statusArea.setPadding(padH, padV, padH, padV)
     }
 
     private fun launchAssistant() {
@@ -1943,6 +1945,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         ColorUtils.applySecondaryColor(context, sharedPreferences, pinBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, powerBtn)
         ColorUtils.applySecondaryColor(context, sharedPreferences, statusArea)
+        statusArea.background.alpha = maxOf(statusArea.background.alpha, 140)
     }
 
     private fun updateCorners() {
