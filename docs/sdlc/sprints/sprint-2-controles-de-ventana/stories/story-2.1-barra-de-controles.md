@@ -57,3 +57,12 @@ Probando `am stack move-task 48 46 true` (moveTaskToRootTask) para pasar la calc
 
 ## QA (2026-10-07, ciclo 1)
 Pasa: AC1-AC4 y AC6 verificados en la tablet (capturas `docs/progress/s-2.1-*.png`; barra 162x49 px, 2.7 % del alto); AC5 por unit. Pendiente conocido: el filtro de systemui solo lo cubre el unit test; `update()` y la vista no tienen test.
+
+## Correcciones del code-review (2026-10-07)
+- `DockService.removeAllViews`: `windowControls.destroy()` va en su propio try, después del bloque compartido (si lanza no filtra el resto de vistas).
+- `WindowControlsBar`: `getMethod("getWindowingMode")` envuelto en `runCatching` (nulo si falla; `update()` oculta la barra vía el catch). No se reutilizó `AppUtils.getRunningTasks`: filtra distinto (baseActivity, systemui/Recents) y carga íconos/labels; duplicaría trabajo caro en cada evento.
+- Cerrar re-resuelve la tarea en primer plano al hacer clic y aplica `targetTask` antes de `removeTask`; ya no usa el objetivo cacheado. `update()` y el clic comparten `resolveTarget()`; su catch ahora hace `Log.w`.
+- `createViews` llama `update()` tras construir la barra.
+- Tests: 8 pruebas (nuevo: launcher al frente al clic no ejecuta nada), `assembleDebug testDebugUnitTest` exit 0. Tablet: reloj fullscreen -> `mViewVisibility=0x0` (frame 162x49 px); tap en cerrar -> tarea 56 desaparece de `am stack list`, topResumed = launcher, barra `0x8`.
+- Capturas: se quitaron del git (y del disco) los originales de tamaño completo `s-2.1-{fullscreen,launcher,freeform}.png`; quedan `.800.png` y `.crop.png`.
+- Deuda anotada, no hecha: filtro por display, exclusión de Recents, `update()` fuera del hilo principal, aviso por Shizuku caído.

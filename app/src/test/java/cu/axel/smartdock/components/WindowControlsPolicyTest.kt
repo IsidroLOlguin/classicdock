@@ -58,4 +58,12 @@ class WindowControlsPolicyTest {
         WindowControlsPolicy.runOnTask(task("a", id = 42)) { recibido = it }
         assertEquals(42, recibido)
     }
+
+    @Test
+    fun cerrarConLauncherAlFrenteNoQuitaNada() {
+        var llamadas = 0
+        val top = task(launcher, id = 9)
+        WindowControlsPolicy.runOnTask(WindowControlsPolicy.targetTask(top, launcher, own)) { llamadas++ }
+        assertEquals(0, llamadas)
+    }
 }

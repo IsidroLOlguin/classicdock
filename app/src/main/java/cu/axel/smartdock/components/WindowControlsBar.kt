@@ -2,6 +2,7 @@ package cu.axel.smartdock.components
 
 import android.app.ActivityManager
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -37,35 +38,37 @@ class WindowControlsBar(
 ) {
     private val view = LayoutInflater.from(ContextThemeWrapper(context, R.style.AppTheme_Dock))
         .inflate(R.layout.window_controls, null)
-    private val getWindowingMode =
+    private val getWindowingMode = runCatching {
         ActivityManager.RunningTaskInfo::class.java.getMethod("getWindowingMode")
-    private var target: ForegroundTask? = null
+    }.getOrNull()
 
     init {
         view.findViewById<View>(R.id.window_minimize_btn).setOnClickListener { goHome() }
         view.findViewById<View>(R.id.window_close_btn).setOnClickListener {
-            WindowControlsPolicy.runOnTask(target) { activityManager()?.removeTask(it) }
+            WindowControlsPolicy.runOnTask(resolveTarget()) { activityManager()?.removeTask(it) }
         }
         val params = Utils.makeWindowParams(-2, -2, context, secondaryDisplay, true)
         params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
         windowManager.addView(view, params)
     }
 
+    private fun resolveTarget(): ForegroundTask? = try {
+        val top = activityManager()?.getRunningTasks(5)
+            ?.firstOrNull { it.isRunning && it.topActivity != null }
+        WindowControlsPolicy.targetTask(
+            top?.let {
+                ForegroundTask(it.id, it.topActivity!!.packageName, getWindowingMode!!.invoke(it) as Int)
+            },
+            AppUtils.getCurrentLauncher(context.packageManager),
+            context.packageName
+        )
+    } catch (e: Exception) {
+        Log.w("WindowControlsBar", "No se pudo resolver la tarea en primer plano", e)
+        null
+    }
+
     fun update() {
-        target = try {
-            val top = activityManager()?.getRunningTasks(5)
-                ?.firstOrNull { it.isRunning && it.topActivity != null }
-            WindowControlsPolicy.targetTask(
-                top?.let {
-                    ForegroundTask(it.id, it.topActivity!!.packageName, getWindowingMode.invoke(it) as Int)
-                },
-                AppUtils.getCurrentLauncher(context.packageManager),
-                context.packageName
-            )
-        } catch (_: Exception) {
-            null
-        }
-        view.visibility = if (target != null) View.VISIBLE else View.GONE
+        view.visibility = if (resolveTarget() != null) View.VISIBLE else View.GONE
     }
 
     fun destroy() {

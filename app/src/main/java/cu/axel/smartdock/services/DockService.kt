@@ -2096,7 +2096,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         windowControls = WindowControlsBar(
             context, windowManager, preferSecondaryDisplay,
             { activityManagerWrapper }, { performGlobalAction(GLOBAL_ACTION_HOME) }
-        )
+        ).also { it.update() }
         notificationLayout = NotificationLayout(
             context,
             sharedPreferences,
@@ -2432,13 +2432,16 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
     private fun removeAllViews() {
         try {
-            windowControls?.destroy()
             dock?.let { windowManager.removeViewImmediate(it) }
             dockHandle?.let { windowManager.removeViewImmediate(it) }
             appMenu?.let { windowManager.removeViewImmediate(it) }
             topRightCorner?.let { windowManager.removeViewImmediate(it) }
             bottomRightCorner?.let { windowManager.removeViewImmediate(it) }
             notificationLayout?.let { windowManager.removeViewImmediate(it.notificationLayout) }
+        } catch (_: Exception) {
+        }
+        try {
+            windowControls?.destroy()
         } catch (_: Exception) {
         }
 
