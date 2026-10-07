@@ -1,7 +1,7 @@
 <resources>
 
     <!-- General -->
-    <string name="app_name">Smart Dock</string>
+    <string name="app_name">ClassicDock</string>
     <string name="none">Ninguno</string>
     <string name="move">Mover</string>
     <string name="ok">OK</string>
@@ -29,7 +29,7 @@
     <string name="overlays_in_settings">Permitir superposición en Ajustes</string>
     <string name="overlays_in_settings_desc">Permite mantener el dock visible mientras la app de Ajustes está abierta. Esto permite a cualquier mostrar contenido <b>a cualquier app</b> sobre la app de Ajustes no solo al Dock. Debe habilitarse desde Ajustes de desarrollador</string>
     <string name="write_secure">Escribir ajustes protegidos</string>
-    <string name="write_secure_desc">Se necesita para usar ajustes avanzados. Este es un permiso especial que debe condederse con root o adb ejecutando: \npm grant cu.axel.smartdock android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="write_secure_desc">Se necesita para usar ajustes avanzados. Este es un permiso especial que debe condederse con root o adb ejecutando: \npm grant dev.isidro.classicdock android.permission.WRITE_SECURE_SETTINGS</string>
     <string name="manage">Administrar…</string>
     <string name="grant">Conceder</string>
     <string name="enable">Habilitar</string>
