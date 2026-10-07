@@ -10,6 +10,14 @@ adb shell settings put secure enabled_accessibility_services "<los que ya había
 ```
 Leer primero la lista actual con `settings get secure enabled_accessibility_services`.
 
+## Shizuku (ids de tarea reales, requerido por S-2.1)
+Instalado en la tablet desde el APK de RikkaApps (v13.6.0). No sobrevive a un reinicio de la tablet; arrancarlo con la tablet por USB:
+```
+P=$(adb shell pm path moe.shizuku.privileged.api | sed 's/package://; s/base.apk//')
+adb shell "${P}lib/arm64/libshizuku.so"
+```
+Primera vez: ClassicDock > Administrar permisos > Opcional > Shizuku > Conceder > «Permitir todo el tiempo». Después hay que reiniciar el servicio (`am force-stop` y reponer accesibilidad): los wrappers se crean solo al arrancar. Con Shizuku, `getRunningTasks` devuelve ids reales (medido: 46, 48, 47...) y no -1.
+
 ## Trampas medidas
 - Sin `SYSTEM_ALERT_WINDOW` el servicio truena con `BadTokenException type 2038`.
 - En One UI 8 «Permitir ajustes restringidos» no aparece en el menú: se da por `appops`.
