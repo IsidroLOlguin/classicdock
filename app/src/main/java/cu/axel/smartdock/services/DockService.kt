@@ -58,6 +58,7 @@ import android.view.ViewGroup
 import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityWindowInfo
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -2095,7 +2096,13 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         createAppMenu()
         windowControls = WindowControlsBar(
             context, windowManager, preferSecondaryDisplay,
-            { activityManagerWrapper }, { performGlobalAction(GLOBAL_ACTION_HOME) }
+            { activityManagerWrapper },
+            { display ->
+                windowsOnAllDisplays[display]
+                    ?.firstOrNull { it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isActive }
+                    ?.root?.packageName?.toString()
+            },
+            { performGlobalAction(GLOBAL_ACTION_HOME) }
         ).also { it.update() }
         notificationLayout = NotificationLayout(
             context,

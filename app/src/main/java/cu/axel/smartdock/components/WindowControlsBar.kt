@@ -12,10 +12,12 @@ import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import cu.axel.smartdock.R
 import cu.axel.smartdock.models.WINDOWING_MODE_FREEFORM
+import cu.axel.smartdock.models.WINDOWING_MODE_FULLSCREEN
 import cu.axel.smartdock.utils.AppUtils
 import cu.axel.smartdock.utils.Utils
 import cu.axel.smartdock.wrappers.ActivityManagerWrapper
 import java.util.concurrent.Executors
+import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class ForegroundTask(
@@ -40,6 +42,10 @@ object WindowControlsPolicy {
         return top
     }
 
+    // Sin Shizuku solo se conoce el paquete en primer plano; el id -1 impide cerrar y el modo se asume pantalla completa.
+    fun fallbackTask(packageName: String?, displayId: Int) =
+        packageName?.let { ForegroundTask(-1, it, WINDOWING_MODE_FULLSCREEN, displayId) }
+
     fun runOnTask(task: ForegroundTask?, action: (Int) -> Unit) {
         if (task != null && task.id > 0) action(task.id)
     }
@@ -61,6 +67,7 @@ class WindowControlsBar(
     private val windowManager: WindowManager,
     secondaryDisplay: Boolean,
     private val activityManager: () -> ActivityManagerWrapper?,
+    private val foregroundPackage: (Int) -> String?,
     goHome: () -> Unit
 ) {
     private val view = LayoutInflater.from(ContextThemeWrapper(context, R.style.AppTheme_Dock))
@@ -77,14 +84,14 @@ class WindowControlsBar(
     private val queued = AtomicBoolean(false)
     private val buttons = view.findViewById<View>(R.id.window_buttons)
     private val notice = view.findViewById<View>(R.id.window_notice)
-    private var warning = false
+    @Volatile private var warning = false
     private val hideNotice = Runnable {
         warning = false
         notice.visibility = View.GONE
         buttons.visibility = View.VISIBLE
         update()
     }
-    private var destroyed = false
+    @Volatile private var destroyed = false
 
     init {
         view.findViewById<View>(R.id.window_minimize_btn).setOnClickListener { goHome() }
@@ -96,9 +103,16 @@ class WindowControlsBar(
 
     private fun availableManager() = activityManager()?.takeIf { it.isAlive() }
 
-    private fun resolveTarget(am: ActivityManagerWrapper): ForegroundTask? = try {
+    private fun runInBackground(block: () -> Unit) {
+        try {
+            executor.execute(block)
+        } catch (_: RejectedExecutionException) {
+        }
+    }
+
+    private fun resolveTarget(am: ActivityManagerWrapper?): ForegroundTask? = try {
         WindowControlsPolicy.targetTask(
-            am.getRunningTasks(5).filter { it.isRunning && it.topActivity != null }.map {
+            if (am != null) am.getRunningTasks(5).filter { it.isRunning && it.topActivity != null }.map {
                 ForegroundTask(
                     it.id,
                     it.topActivity!!.packageName,
@@ -106,7 +120,7 @@ class WindowControlsBar(
                     displayIdField?.getInt(it) ?: WindowControlsPolicy.INVALID_DISPLAY_ID,
                     it.topActivity!!.className
                 )
-            },
+            } else listOfNotNull(WindowControlsPolicy.fallbackTask(foregroundPackage(displayId), displayId)),
             displayId,
             AppUtils.getCurrentLauncher(context.packageManager),
             context.packageName
@@ -119,7 +133,7 @@ class WindowControlsBar(
     private fun closeForeground() {
         if (destroyed) return
         val am = availableManager()
-        executor.execute {
+        runInBackground {
             val result = WindowControlsPolicy.close(am != null, am?.let { resolveTarget(it) }) { am?.removeTask(it) }
             if (result == CloseResult.UNAVAILABLE) view.post { warnUnavailable() }
         }
@@ -138,12 +152,8 @@ class WindowControlsBar(
     fun update() {
         if (destroyed || warning) return
         val am = availableManager()
-        if (am == null) {
-            view.visibility = View.GONE
-            return
-        }
         if (!queued.compareAndSet(false, true)) return
-        executor.execute {
+        runInBackground {
             queued.set(false)
             val visible = resolveTarget(am) != null
             view.post { if (!warning) view.visibility = if (visible) View.VISIBLE else View.GONE }

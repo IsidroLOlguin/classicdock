@@ -148,4 +148,30 @@ class WindowControlsPolicyTest {
         val r = WindowControlsPolicy.close(true, task("a", id = 5)) { throw IllegalStateException("binder muerto") }
         assertEquals(CloseResult.UNAVAILABLE, r)
     }
+
+    private fun fallbackTarget(pkg: String?, display: Int = 0) =
+        WindowControlsPolicy.targetTask(listOfNotNull(WindowControlsPolicy.fallbackTask(pkg, display)), display, launcher, own)
+
+    @Test
+    fun sinShizukuUnaAppEnPrimerPlanoSigueSiendoObjetivo() {
+        assertEquals("com.brave.browser", fallbackTarget("com.brave.browser")?.packageName)
+    }
+
+    @Test
+    fun sinShizukuLauncherSystemUiYClassicDockNoSonObjetivo() {
+        assertNull(fallbackTarget(launcher))
+        assertNull(fallbackTarget("com.android.systemui"))
+        assertNull(fallbackTarget(own))
+        assertNull(fallbackTarget(null))
+    }
+
+    @Test
+    fun sinShizukuElObjetivoNoTieneIdYCerrarAvisa() {
+        val t = fallbackTarget("com.brave.browser")
+        assertEquals(-1, t?.id)
+        var llamadas = 0
+        WindowControlsPolicy.runOnTask(t) { llamadas++ }
+        assertEquals(CloseResult.UNAVAILABLE, WindowControlsPolicy.close(false, t) { llamadas++ })
+        assertEquals(0, llamadas)
+    }
 }
