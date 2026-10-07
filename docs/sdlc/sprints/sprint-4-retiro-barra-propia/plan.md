@@ -1,9 +1,11 @@
-# Sprint 4 — E-4 Barra de controles fuera del notch
+# Sprint 4 — E-4 Retiro de la barra propia (redefinido 2026-10-07)
+
+Original: mover la barra fuera del notch. Cambió: la barra nativa de Samsung no se puede fijar y Isidro prefiere usarla; S-4.1 ahora retira `WindowControlsBar`. Dev anterior (8ee2889) descartado.
 
 ## Stories
 | Story | Cubre | Complejidad | Depende de | Dev | Aislamiento |
 |---|---|---|---|---|---|
-| S-4.1 | FR-10 | S | S-3.1 | sdlc-dev | worktree `feature/controls-bar-corner` |
+| S-4.1 | FR-09, FR-10 | S | S-3.1 | sdlc-dev | worktree `feature/remove-controls-bar` |
 
 ## Paralelización
 Ninguna: una story, toca `WindowControlsBar.kt` (gravity y offset en `init`, línea ~102) y su layout.

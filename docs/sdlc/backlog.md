@@ -7,7 +7,7 @@
 | E-1 | Dock y barra de apps | Aspecto DeX clásico | FR-02..FR-07 | 2 |
 | E-2 | Controles de ventana | Minimizar y cerrar siempre visibles | FR-09 | 3 |
 | E-3 | Deuda de la barra de controles | Barra correcta por display, sin Recents, sin trabajo en el hilo principal y con aviso si Shizuku cae | FR-09 | 4 |
-| E-4 | Barra de controles fuera del notch | Barra en la esquina superior derecha, bajo wifi/batería | FR-10 | 5 |
+| E-4 | Retiro de la barra propia | Quitar WindowControlsBar y usar la barra nativa de Samsung | FR-09, FR-10 | 5 |
 
 ## Stories
 ### S-0.1 — Rebrand (rama `feature/rebrand`)
@@ -112,16 +112,16 @@
   - Given cambios rápidos de app When `update()` corre Then la consulta de tareas no bloquea el hilo principal
   - Given Shizuku caído When toco cerrar Then veo un aviso y la barra no hace nada en silencio
 
-### S-4.1 — Barra de controles bajo la bandeja (rama `feature/controls-bar-corner`)
-- Como Isidro quiero minimizar y cerrar en la esquina superior derecha, bajo los íconos de wifi y batería, para que no queden sobre el notch
-- Cubre: FR-10
+### S-4.1 — Retirar la barra propia de controles (rama `feature/remove-controls-bar`)
+- Como Isidro quiero usar la barra nativa de Samsung, sin una barra duplicada de ClassicDock
+- Cubre: FR-09, FR-10
 - Complejidad: S
 - Depende de: S-3.1
 - Criterios de aceptación:
-  - Given una app a pantalla completa en la tablet When miro la parte superior Then la barra está en la esquina superior derecha, debajo de la bandeja de estado, y no toca la zona del notch
-  - Given rotación vertical u horizontal When cambia la orientación Then la barra sigue pegada a la esquina derecha, bajo la barra de estado
-  - Given la barra movida When toco minimizar y cerrar Then siguen funcionando igual que en S-3.1 (misma tarea, mismos avisos)
-  - Given el display secundario When hay barra Then se ubica igual en su esquina superior derecha
+  - Given una app abierta When miro la esquina superior derecha Then ClassicDock no dibuja ninguna barra de controles y solo está la de Samsung
+  - Given el código When se busca `WindowControlsBar`, `WindowControlsPolicy` y su layout Then ya no existen, ni sus llamadas en `DockService`
+  - Given el build When corro `./gradlew testDebugUnitTest assembleDebug` Then pasa sin errores
+- Nota: la rama `feature/controls-bar-corner` (commit 8ee2889, worktree `classicdock-s41`) se descarta sin merge.
 
 ## Historial de cambios
 | Fecha | Cambio | Motivo | Sprint origen |
@@ -129,3 +129,4 @@
 | 2026-10-06 | Backlog inicial | Alcance v1 aprobado | n/a |
 | 2026-10-07 | E-2 y S-2.1 | Isidro pidió botones de ventana siempre visibles; elegida barra propia (DeX descartado: no activable por adb) | n/a |
 | 2026-10-07 | E-4 y S-4.1 | Los botones caían sobre el notch de la tablet; Isidro pidió moverlos a la derecha bajo wifi/batería | n/a |
+| 2026-10-07 | E-4 y S-4.1 redefinidas | Spike: la barra nativa de Samsung no se puede fijar (18 pruebas); Isidro decidió quitar la barra propia. FR-09/FR-10 pasan a Won't | n/a |
