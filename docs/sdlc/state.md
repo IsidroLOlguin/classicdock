@@ -10,8 +10,8 @@
 
 ## Etapa actual
 - Loop: interno
-- Artefacto/Sprint en curso: sprint-2 (E-2), plan aprobado
-- Story en curso y fase: S-2.1 QA pasa; espera gate de code-review y merge a dev
+- Artefacto/Sprint en curso: sprint-2 (E-2), S-2.1 DONE en dev
+- Story en curso y fase: S-2.1 DONE; falta retro del sprint-2
 
 ## Gates cruzados
 | Fecha | Artefacto/Story | Notas |
@@ -22,6 +22,7 @@
 | 2026-10-07 | S-1.1 a S-1.6 | En dev, verificadas en tablet (docs/progress), retro en sprints/sprint-1-dock-y-barra-de-apps |
 | 2026-10-07 | S-2.0 | Shizuku v13.6.0 en tablet, ids de tarea reales medidos; docs/progress/s-2.0-shizuku.png |
 | 2026-10-07 | Plan sprint-2 (E-2) | Aprobado: Shizuku (S-2.0) y barra propia (S-2.1), oculta en flotantes |
+| 2026-10-07 | S-2.1 | Barra min+cerrar (maximizar imposible en Android 16), QA y code-review ok, en dev |
 | 2026-10-07 | S-0.1, S-0.2 | Rebrand y deploy.sh en dev (push hecho); tablet SM-X910 verificada |
 
 ## Épicas
@@ -32,7 +33,7 @@
 | E-2 Controles de ventana | en curso | sprint-2 |
 
 ## Bloqueos y pendientes
-- S-2.1 espera a S-2.0 (ids de tarea reales con Shizuku).
+- Deuda S-2.1: filtro por display, excluir Recents, update() fuera del hilo principal, aviso si Shizuku cae (en la story).
 - Mantenimiento y trampas en docs/maintenance.md.
 
 ## Decisiones rápidas (que no ameritan ADR)
