@@ -79,11 +79,20 @@
 - Criterios de aceptación:
   - Given el dock oculto When lo activo Then aparece con fade y escala desde 0.90 en 180 ms, y al ocultarse hace lo inverso
 
+### S-2.0 — Shizuku operativo (rama `feature/shizuku-setup`)
+- Como Isidro quiero ids de tarea reales para que la barra pueda cerrar y maximizar
+- Cubre: FR-09
+- Complejidad: S
+- Depende de: S-1.2
+- Criterios de aceptación:
+  - Given Shizuku instalado y arrancado por adb When abro ClassicDock Then `AppTask.id` es > 0 en las apps abiertas
+  - Given el procedimiento When se documenta Then `docs/maintenance.md` explica cómo reiniciar Shizuku
+
 ### S-2.1 — Barra de controles de ventana (rama `feature/window-controls`)
 - Como Isidro quiero minimizar, maximizar y cerrar visibles en cualquier ventana, también a pantalla completa
 - Cubre: FR-09
 - Complejidad: M
-- Depende de: S-1.2
+- Depende de: S-2.0
 - Criterios de aceptación:
   - Given una app a pantalla completa When miro la parte superior Then veo una barra fina de ClassicDock con minimizar, maximizar y cerrar
   - Given una ventana flotante When la miro Then no hay botones duplicados con los de Samsung
