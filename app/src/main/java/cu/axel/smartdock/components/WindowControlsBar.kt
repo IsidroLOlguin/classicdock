@@ -75,6 +75,15 @@ class WindowControlsBar(
     }.getOrNull()
     private val executor = Executors.newSingleThreadExecutor()
     private val queued = AtomicBoolean(false)
+    private val buttons = view.findViewById<View>(R.id.window_buttons)
+    private val notice = view.findViewById<View>(R.id.window_notice)
+    private var warning = false
+    private val hideNotice = Runnable {
+        warning = false
+        notice.visibility = View.GONE
+        buttons.visibility = View.VISIBLE
+        update()
+    }
     private var destroyed = false
 
     init {
@@ -112,13 +121,22 @@ class WindowControlsBar(
         val am = availableManager()
         executor.execute {
             val result = WindowControlsPolicy.close(am != null, am?.let { resolveTarget(it) }) { am?.removeTask(it) }
-            if (result == CloseResult.UNAVAILABLE)
-                view.post { Toast.makeText(context, R.string.close_needs_shizuku, Toast.LENGTH_LONG).show() }
+            if (result == CloseResult.UNAVAILABLE) view.post { warnUnavailable() }
         }
     }
 
+    // Samsung suprime los Toast de apps con notificaciones bloqueadas (medido en SM-X910), así que el aviso también va dentro de la barra.
+    private fun warnUnavailable() {
+        Toast.makeText(context, R.string.close_needs_shizuku, Toast.LENGTH_LONG).show()
+        warning = true
+        buttons.visibility = View.GONE
+        notice.visibility = View.VISIBLE
+        view.removeCallbacks(hideNotice)
+        view.postDelayed(hideNotice, 3000)
+    }
+
     fun update() {
-        if (destroyed) return
+        if (destroyed || warning) return
         val am = availableManager()
         if (am == null) {
             view.visibility = View.GONE
@@ -128,7 +146,7 @@ class WindowControlsBar(
         executor.execute {
             queued.set(false)
             val visible = resolveTarget(am) != null
-            view.post { view.visibility = if (visible) View.VISIBLE else View.GONE }
+            view.post { if (!warning) view.visibility = if (visible) View.VISIBLE else View.GONE }
         }
     }
 
