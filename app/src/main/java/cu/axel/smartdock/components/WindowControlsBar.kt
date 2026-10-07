@@ -5,20 +5,36 @@ import android.content.Context
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Display
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import cu.axel.smartdock.R
 import cu.axel.smartdock.models.WINDOWING_MODE_FREEFORM
 import cu.axel.smartdock.utils.AppUtils
 import cu.axel.smartdock.utils.Utils
 import cu.axel.smartdock.wrappers.ActivityManagerWrapper
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
-data class ForegroundTask(val id: Int, val packageName: String, val windowingMode: Int)
+data class ForegroundTask(
+    val id: Int,
+    val packageName: String,
+    val windowingMode: Int,
+    val displayId: Int,
+    val activity: String = ""
+)
+
+enum class CloseResult { CLOSED, NO_TARGET, UNAVAILABLE }
 
 object WindowControlsPolicy {
-    fun targetTask(top: ForegroundTask?, launcher: String, own: String): ForegroundTask? {
-        if (top == null || top.windowingMode == WINDOWING_MODE_FREEFORM) return null
+    const val INVALID_DISPLAY_ID = -1
+    const val RECENTS_ACTIVITY = "com.android.quickstep.RecentsActivity"
+
+    fun targetTask(tasks: List<ForegroundTask>, displayId: Int, launcher: String, own: String): ForegroundTask? {
+        val top = tasks.firstOrNull { it.displayId == displayId } ?: return null
+        if (top.windowingMode == WINDOWING_MODE_FREEFORM || top.activity == RECENTS_ACTIVITY) return null
         if (top.packageName == launcher || top.packageName == own || top.packageName.startsWith("com.android.systemui"))
             return null
         return top
@@ -26,6 +42,17 @@ object WindowControlsPolicy {
 
     fun runOnTask(task: ForegroundTask?, action: (Int) -> Unit) {
         if (task != null && task.id > 0) action(task.id)
+    }
+
+    fun close(available: Boolean, task: ForegroundTask?, remove: (Int) -> Unit): CloseResult {
+        if (!available) return CloseResult.UNAVAILABLE
+        if (task == null || task.id <= 0) return CloseResult.NO_TARGET
+        return try {
+            remove(task.id)
+            CloseResult.CLOSED
+        } catch (e: Exception) {
+            CloseResult.UNAVAILABLE
+        }
     }
 }
 
@@ -38,27 +65,40 @@ class WindowControlsBar(
 ) {
     private val view = LayoutInflater.from(ContextThemeWrapper(context, R.style.AppTheme_Dock))
         .inflate(R.layout.window_controls, null)
+    private val displayId = runCatching { context.display.displayId }
+        .getOrDefault(Display.DEFAULT_DISPLAY)
     private val getWindowingMode = runCatching {
         ActivityManager.RunningTaskInfo::class.java.getMethod("getWindowingMode")
     }.getOrNull()
+    private val displayIdField = runCatching {
+        ActivityManager.RunningTaskInfo::class.java.getField("displayId")
+    }.getOrNull()
+    private val executor = Executors.newSingleThreadExecutor()
+    private val queued = AtomicBoolean(false)
+    private var destroyed = false
 
     init {
         view.findViewById<View>(R.id.window_minimize_btn).setOnClickListener { goHome() }
-        view.findViewById<View>(R.id.window_close_btn).setOnClickListener {
-            WindowControlsPolicy.runOnTask(resolveTarget()) { activityManager()?.removeTask(it) }
-        }
+        view.findViewById<View>(R.id.window_close_btn).setOnClickListener { closeForeground() }
         val params = Utils.makeWindowParams(-2, -2, context, secondaryDisplay, true)
         params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
         windowManager.addView(view, params)
     }
 
-    private fun resolveTarget(): ForegroundTask? = try {
-        val top = activityManager()?.getRunningTasks(5)
-            ?.firstOrNull { it.isRunning && it.topActivity != null }
+    private fun availableManager() = activityManager()?.takeIf { it.isAlive() }
+
+    private fun resolveTarget(am: ActivityManagerWrapper): ForegroundTask? = try {
         WindowControlsPolicy.targetTask(
-            top?.let {
-                ForegroundTask(it.id, it.topActivity!!.packageName, getWindowingMode!!.invoke(it) as Int)
+            am.getRunningTasks(5).filter { it.isRunning && it.topActivity != null }.map {
+                ForegroundTask(
+                    it.id,
+                    it.topActivity!!.packageName,
+                    getWindowingMode!!.invoke(it) as Int,
+                    displayIdField?.getInt(it) ?: WindowControlsPolicy.INVALID_DISPLAY_ID,
+                    it.topActivity!!.className
+                )
             },
+            displayId,
             AppUtils.getCurrentLauncher(context.packageManager),
             context.packageName
         )
@@ -67,11 +107,34 @@ class WindowControlsBar(
         null
     }
 
+    private fun closeForeground() {
+        if (destroyed) return
+        val am = availableManager()
+        executor.execute {
+            val result = WindowControlsPolicy.close(am != null, am?.let { resolveTarget(it) }) { am?.removeTask(it) }
+            if (result == CloseResult.UNAVAILABLE)
+                view.post { Toast.makeText(context, R.string.close_needs_shizuku, Toast.LENGTH_LONG).show() }
+        }
+    }
+
     fun update() {
-        view.visibility = if (resolveTarget() != null) View.VISIBLE else View.GONE
+        if (destroyed) return
+        val am = availableManager()
+        if (am == null) {
+            view.visibility = View.GONE
+            return
+        }
+        if (!queued.compareAndSet(false, true)) return
+        executor.execute {
+            queued.set(false)
+            val visible = resolveTarget(am) != null
+            view.post { view.visibility = if (visible) View.VISIBLE else View.GONE }
+        }
     }
 
     fun destroy() {
+        destroyed = true
+        executor.shutdownNow()
         windowManager.removeViewImmediate(view)
     }
 }
