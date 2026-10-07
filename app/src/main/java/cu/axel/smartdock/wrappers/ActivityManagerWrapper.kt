@@ -44,6 +44,12 @@ class ActivityManagerWrapper {
         activityManager?.resizeTask(taskId, bounds, 0)
     }
 
+    // Android 16 no trae setTaskWindowingMode en IActivityManager ni IActivityTaskManager (medido contra
+    // AOSP android16-release); resizeTask solo actua sobre tareas freeform o multiventana y no cambia su modo.
+    fun setTaskFullscreen(taskId: Int) {
+        activityManager?.resizeTask(taskId, Rect(), 0)
+    }
+
     fun removeTask(taskId: Int): Boolean {
         return activityManager?.removeTask(taskId) ?: false
     }

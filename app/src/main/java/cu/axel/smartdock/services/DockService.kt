@@ -103,6 +103,7 @@ import cu.axel.smartdock.adapters.DockAppAdapter.OnDockAppClickListener
 import cu.axel.smartdock.adapters.NotificationAdapter
 import cu.axel.smartdock.adapters.NotificationAdapter.OnNotificationClickListener
 import cu.axel.smartdock.components.NotificationLayout
+import cu.axel.smartdock.components.WindowControlsBar
 import cu.axel.smartdock.db.DBHelper
 import cu.axel.smartdock.dialogs.DockDialog
 import cu.axel.smartdock.dialogs.DockLayoutDialog
@@ -214,6 +215,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private var notificationBridge: INotificationServiceBridge? = null
     private lateinit var connectivityManager: ConnectivityManager
     private var notificationLayout: NotificationLayout? = null
+    private var windowControls: WindowControlsBar? = null
     private lateinit var statusArea: LinearLayout
     override fun onCreate() {
         super.onCreate()
@@ -512,6 +514,10 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED ||
+            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+        )
+            windowControls?.update()
         if (!isPinned)
             return
 
@@ -2087,6 +2093,10 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         createDock()
         createHotCorners()
         createAppMenu()
+        windowControls = WindowControlsBar(
+            context, windowManager, preferSecondaryDisplay,
+            { activityManagerWrapper }, { performGlobalAction(GLOBAL_ACTION_HOME) }
+        )
         notificationLayout = NotificationLayout(
             context,
             sharedPreferences,
@@ -2422,6 +2432,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
 
     private fun removeAllViews() {
         try {
+            windowControls?.destroy()
             dock?.let { windowManager.removeViewImmediate(it) }
             dockHandle?.let { windowManager.removeViewImmediate(it) }
             appMenu?.let { windowManager.removeViewImmediate(it) }
@@ -2431,6 +2442,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         } catch (_: Exception) {
         }
 
+        windowControls = null
         dock = null
         dockHandle = null
         appMenu = null
