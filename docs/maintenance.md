@@ -23,9 +23,8 @@ Primera vez: ClassicDock > Administrar permisos > Opcional > Shizuku > Conceder 
 - En One UI 8 «Permitir ajustes restringidos» no aparece en el menú: se da por `appops`.
 - Las preferencias se leen al arrancar el servicio; cambiar el XML de `shared_prefs` exige `force-stop` y reactivar.
 - Con dos perfiles (trabajo, usuario 150) `adb shell pm list packages` falla: usar `--user 0`.
-- En la tablet las notificaciones de ClassicDock están bloqueadas y el interruptor no se puede activar (la app no declara `POST_NOTIFICATIONS`): Samsung suprime sus `Toast` (`NotificationService: Suppressing toast`). Los avisos que deban verse van dentro de la barra, no solo en `Toast`.
+- En la tablet las notificaciones de ClassicDock están bloqueadas y el interruptor no se puede activar (la app no declara `POST_NOTIFICATIONS`): Samsung suprime sus `Toast` (`NotificationService: Suppressing toast`). Los avisos que deban verse van dentro de la interfaz propia, no solo en `Toast`.
 - Los indicadores de app abierta solo salen con Shizuku o app de sistema.
-- Barra de controles sin Shizuku: sigue visible (la tarea se deduce de la ventana de aplicación activa de accesibilidad), Minimizar funciona y Cerrar muestra «Sin Shizuku no se puede cerrar la app». Sin Shizuku no distingue ventanas freeform ni Recents de otro launcher.
 
 ## Cambios propios sobre Smart Dock
 Íconos de 44dp (`dimens.xml`), dock flotante (`dock_float_margin`, `Utils.dockHeightPx`), tema `fully_transparent`, indicadores 16x3dp / 4x4dp, píldora de bandeja `tray_pill.xml`, animaciones `dock_show` / `dock_hide`. El namespace del código sigue siendo `cu.axel.smartdock`.

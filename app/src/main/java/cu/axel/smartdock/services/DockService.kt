@@ -58,7 +58,6 @@ import android.view.ViewGroup
 import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityWindowInfo
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -104,7 +103,6 @@ import cu.axel.smartdock.adapters.DockAppAdapter.OnDockAppClickListener
 import cu.axel.smartdock.adapters.NotificationAdapter
 import cu.axel.smartdock.adapters.NotificationAdapter.OnNotificationClickListener
 import cu.axel.smartdock.components.NotificationLayout
-import cu.axel.smartdock.components.WindowControlsBar
 import cu.axel.smartdock.db.DBHelper
 import cu.axel.smartdock.dialogs.DockDialog
 import cu.axel.smartdock.dialogs.DockLayoutDialog
@@ -216,7 +214,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     private var notificationBridge: INotificationServiceBridge? = null
     private lateinit var connectivityManager: ConnectivityManager
     private var notificationLayout: NotificationLayout? = null
-    private var windowControls: WindowControlsBar? = null
     private lateinit var statusArea: LinearLayout
     override fun onCreate() {
         super.onCreate()
@@ -515,10 +512,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED ||
-            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-        )
-            windowControls?.update()
         if (!isPinned)
             return
 
@@ -2094,16 +2087,6 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
         createDock()
         createHotCorners()
         createAppMenu()
-        windowControls = WindowControlsBar(
-            context, windowManager, preferSecondaryDisplay,
-            { activityManagerWrapper },
-            { display ->
-                windowsOnAllDisplays[display]
-                    ?.firstOrNull { it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isActive }
-                    ?.root?.packageName?.toString()
-            },
-            { performGlobalAction(GLOBAL_ACTION_HOME) }
-        ).also { it.update() }
         notificationLayout = NotificationLayout(
             context,
             sharedPreferences,
@@ -2447,12 +2430,7 @@ class DockService : AccessibilityService(), OnSharedPreferenceChangeListener, On
             notificationLayout?.let { windowManager.removeViewImmediate(it.notificationLayout) }
         } catch (_: Exception) {
         }
-        try {
-            windowControls?.destroy()
-        } catch (_: Exception) {
-        }
 
-        windowControls = null
         dock = null
         dockHandle = null
         appMenu = null
